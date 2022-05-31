@@ -1,5 +1,6 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Company } from "../company/company.entity";
+import { Employee } from "../emlpoyee/employee.entity";
 
 @Entity()
 export class Designation {
@@ -8,6 +9,9 @@ export class Designation {
 
   @ManyToOne(() => Company, (company) => company.designations)
   company: Company;
+
+  @OneToMany(() => Employee, (employee) => employee.designation)
+  employees: Employee[]
 
   @Column()
   name: string;

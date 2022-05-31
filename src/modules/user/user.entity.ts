@@ -1,5 +1,8 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ClientAssignment } from "../client-assignment/client-assignment.entity";
+import { Document } from "../document/document.entity";
+import { Employee } from "../emlpoyee/employee.entity";
+import { Record } from "../record/record.entity";
 
 @Entity()
 export class User {
@@ -8,6 +11,18 @@ export class User {
 
   @OneToMany(() => ClientAssignment, (client_assignment) => client_assignment.user)
   client_assignments: ClientAssignment[]
+
+  @OneToMany(() => Document, (document) => document.uploaded_by)
+  documents: Document[]
+
+  @OneToMany(() => Document, (document) => document.reviewed_by)
+  docs: Document[]
+
+  @OneToMany(() => Employee, (employee) => employee.user)
+  employees: Employee[]
+
+  @OneToMany(() => Record, (record) => record.created_by)
+  records: Record[];
 
   @Column()
   first_name: string;
@@ -23,4 +38,10 @@ export class User {
 
   @Column()
   is_verified: string;
+
+  @Column()
+  is_active: boolean;
+
+  @Column()
+  is_deleted: boolean;
 }

@@ -24,24 +24,24 @@ export class User {
   @OneToMany(() => Record, (record) => record.created_by)
   records: Record[];
 
-  @Column()
+  @Column({ nullable: true })
   first_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   last_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   is_verified: string;
 
-  @Column()
+  @Column({ nullable: true })
   is_active: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   is_deleted: boolean;
 }

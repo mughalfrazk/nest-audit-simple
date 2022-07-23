@@ -5,6 +5,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Action } from './modules/action/action.entity';
+import { Attachment } from './modules/attachment/attachment.entity';
 import { City } from './modules/city/city.entity';
 import { ClientAssignment } from './modules/client-assignment/client-assignment.entity';
 import { CompanyType } from './modules/company-type/company-type.entity';
@@ -24,16 +25,18 @@ import { Record } from './modules/record/record.entity';
 import { RolePermission } from './modules/role-permission/role-permission.entity';
 import { Role } from './modules/role/role.entity';
 import { User } from './modules/user/user.entity';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
-      entities: [Action, City, ClientAssignment, Company, CompanyType, ContactInformation, ContactInformationType, Country, Designation, Document, Employee, FirmClient, FirmInfo, Folder, EModule, Permission, Record, Role, RolePermission, User],
+      entities: [Action, City, ClientAssignment, Company, CompanyType, ContactInformation, ContactInformationType, Country, Designation, Document, Employee, FirmClient, FirmInfo, Folder, EModule, Permission, Record, Role, RolePermission, User, Attachment],
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy()
-    })
+    }),
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

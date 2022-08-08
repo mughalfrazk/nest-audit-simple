@@ -7,10 +7,8 @@ import { User } from './user.entity';
 export class UserService {
   constructor(@InjectRepository(User) private repo: Repository<User>) { }
 
-  async create(email: string, password: string) {
-    // const users = await this.find(email);
-    // if (true) throw new BadRequestException('Email already in use.')
-    const user = this.repo.create({ email, password });
+  async create({email, password, first_name, last_name}) {
+    const user = await this.repo.create({ email, password, first_name, last_name });
     return this.repo.save(user);
   }
 

@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Session } from "@nestjs/common";
-import { AuthService } from "src/authentication/auth.service";
-import { CurrentUser } from "src/authentication/decorators/current-user.decorator";
+import { Body, Controller, Get, Post, Session, UseGuards } from "@nestjs/common";
+import { AuthService } from "../../authentication/auth.service";
+import { CurrentUser } from "../../authentication/decorators/current-user.decorator";
+import { AuthGuard } from "../../authentication/guards/auth.guard";
 import { User } from "./user.entity";
 import { UserService } from "./user.service";
 
@@ -9,13 +10,14 @@ export class UserController {
   constructor(private userService: UserService, private authService: AuthService) { }
 
   @Get('/whoami')
+  @UseGuards(AuthGuard)
   whoAmI(@CurrentUser() user: User) {
     return user;
   }
 
   @Post('/signup')
   async createUser(@Body() body: any, @Session() session: any) {
-    const user = await this.authService.signup(body.email, body.password);
+    const user = await this.authService.signup(body);
     session.userId = user.id;
     return user;
   }

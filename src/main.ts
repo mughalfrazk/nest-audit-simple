@@ -5,6 +5,7 @@ const cookieSession = require('cookie-session');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api/v1')
   app.use(cookieSession({
     keys: ['super-secret-key']
   }))
@@ -13,12 +14,12 @@ async function bootstrap() {
     .setTitle('Documents Example')
     .setDescription('The cats API Description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('Cats')
     .build()
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(3000);
+  await app.listen(5000);
 }
 bootstrap();

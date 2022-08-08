@@ -10,7 +10,7 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
   constructor(private usersService: UserService) { }
 
-  async signup(email: string, password: string) {
+  async signup({ first_name, last_name, email, password }) {
     const user = await this.usersService.find(email);
     if (user.length) throw new BadRequestException('Email already in use.');
 
@@ -20,7 +20,7 @@ export class AuthService {
     const hashedPassword = salt + '.' + hash.toString('hex');
 
     // Create a new user
-    return await this.usersService.create(email, hashedPassword);
+    return await this.usersService.create({ email, password: hashedPassword, first_name, last_name });
 
   }
 
@@ -30,7 +30,7 @@ export class AuthService {
 
     const [salt, storedHash] = user.password.split('.');
     const hash = (await scrypt(password, salt, 32)) as Buffer;
-    if (storedHash !== hash.toString('hex')) throw new BadRequestException('bad password');
+    if (storedHash !== hash.toString('hex')) throw new BadRequestException('Wrong Credentails');
 
     return user;
   }

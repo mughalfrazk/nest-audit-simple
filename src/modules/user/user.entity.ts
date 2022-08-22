@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ClientAssignment } from "../client-assignment/client-assignment.entity";
 import { Document } from "../document/document.entity";
 import { Employee } from "../emlpoyee/employee.entity";
@@ -9,7 +9,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => ClientAssignment, (client_assignment) => client_assignment.user)
+  @OneToMany(() => ClientAssignment, (client_assignment) => client_assignment.user, { nullable: true })
   client_assignments: ClientAssignment[]
 
   @OneToMany(() => Document, (document) => document.uploaded_by)
@@ -36,12 +36,19 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
-  is_verified: string;
+  @Column({ default: false })
+  is_verified: boolean;
 
-  @Column({ nullable: true })
+  @Column({ default: false })
   is_active: boolean;
-
-  @Column({ nullable: true })
-  is_deleted: boolean;
+  
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  public created_at: Date;
+  
+  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+  public updated_at: Date;
+  
+  @Column({ type: "timestamp", nullable: true })
+  is_deleted: Date;
+    
 }

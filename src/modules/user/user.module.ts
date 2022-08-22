@@ -17,6 +17,7 @@ import { UserService } from "./user.service";
       provide: APP_INTERCEPTOR,
       useClass: CurrentUserInterceptor
     }
-  ]
+  ],
+  exports: [AuthService]
 })
 export class UserModule {}

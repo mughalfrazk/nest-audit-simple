@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
@@ -24,19 +25,23 @@ import { Permission } from './modules/permission/permission.entity';
 import { Record } from './modules/record/record.entity';
 import { RolePermission } from './modules/role-permission/role-permission.entity';
 import { Role } from './modules/role/role.entity';
+import { RoleModule } from './modules/role/role.module';
+import { RoleService } from './modules/role/role.service';
 import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: 'postgres',
+      // database: 'db.sqlite',
+      url: 'postgresql://postgres:faraz1412@localhost:5432/audit-simple',
       entities: [Action, City, ClientAssignment, Company, CompanyType, ContactInformation, ContactInformationType, Country, Designation, Document, Employee, FirmClient, FirmInfo, Folder, EModule, Permission, Record, Role, RolePermission, User, Attachment],
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy()
     }),
-    UserModule
+    UserModule,
+    RoleModule
   ],
   controllers: [AppController],
   providers: [AppService],

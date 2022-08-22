@@ -1,39 +1,46 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User) private repo: Repository<User>) { }
 
-  async create({email, password, first_name, last_name}) {
-    const user = await this.repo.create({ email, password, first_name, last_name });
-    return this.repo.save(user);
+  async create(user) {
+    const { first_name, last_name, email, password } = user;
+
+    const entity = await this.repo.create({ first_name, last_name, email, password });
+    return this.repo.save(entity);
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<User> | null {
     if (!id) return null;
-    return this.repo.findOne(id);
+    const user = await this.repo.findOne(id);
+    
+    // if (user.is_deleted) return null;
+    return user;
   }
 
   find(email: string) {
     if (!email) return null;
+    // return this.repo.find({ email, is_deleted: IsNull() })
     return this.repo.find({ email })
   }
 
   async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOne(id);
-    if (!user) throw new NotFoundException('User not found');
+    const { first_name, last_name } = attrs;
 
-    Object.assign(user, attrs);
-    return this.repo.save(user);
+    // Object.assign(user, { first_name, last_name });
+    // user.first_name = first_name;
+    // user.last_name = last_name;
+    return this.repo.update(id, { first_name, last_name })
   }
 
   async remove(id: number) {
-    const user = await this.findOne(id);
-    if (!user) throw new NotFoundException('User not found');
+    // const user = await this.findOne(id);
 
-    return this.repo.remove(user);
+    // user.is_deleted = new Date();
+    return this.repo.update(id, { is_deleted: new Date() });
   }
 }

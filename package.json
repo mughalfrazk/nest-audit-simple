@@ -2,7 +2,7 @@
   "name": "nest-audit-simple",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "mughalfrazk",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -28,6 +28,7 @@
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/typeorm": "^8.0.3",
     "@types/cookie-session": "^2.0.44",
+    "class-transformer": "^0.5.1",
     "cookie-session": "^2.0.0",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",

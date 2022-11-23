@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export class UserDto {
   @Expose()
@@ -12,10 +12,10 @@ export class UserDto {
 
   @Expose()
   email: string;
-  
+
   @Expose()
   created_at: Date;
-  
+
   @Expose()
   updated_at: Date;
 }

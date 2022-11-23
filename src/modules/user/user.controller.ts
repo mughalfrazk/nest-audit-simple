@@ -1,16 +1,34 @@
-import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Session, UnauthorizedException, UseGuards } from "@nestjs/common";
-import { Serialize } from "src/interceptors/serialize.interceptor";
-import { AuthService } from "../../authentication/auth.service";
-import { CurrentUser } from "../../authentication/decorators/current-user.decorator";
-import { AuthGuard } from "../../authentication/guards/auth.guard";
-import { UserDto } from "./dtos/user.dto";
-import { User } from "./user.entity";
-import { IUser } from "./user.interface";
-import { UserService } from "./user.service";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Session,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { AuthService } from '../../authentication/auth.service';
+import { CurrentUser } from '../../authentication/decorators/current-user.decorator';
+import { AuthGuard } from '../../authentication/guards/auth.guard';
+import { UserDto } from './dtos/user.dto';
+import { User } from './user.entity';
+import { IUser } from './user.interface';
+import { UserService } from './user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authentication')
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService, private authService: AuthService) { }
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
   @Get('/auth/whoami')
   @Serialize(UserDto)
@@ -33,10 +51,11 @@ export class UserController {
     const user = await this.authService.signin(body.email, body.password);
 
     if (!user.is_active) throw new UnauthorizedException('User is Inactive.');
-    if (user.is_deleted) throw new NotFoundException('User no longer exists.');
-    if (!user.is_verified) throw new UnauthorizedException('User verification required.');
+    // if (user.deleted_at) throw new NotFoundException('User no longer exists.');
+    if (!user.is_verified)
+      throw new UnauthorizedException('User verification required.');
 
-    session.userId = user.id
+    session.userId = user.id;
     return user;
   }
 
@@ -48,7 +67,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Patch('/')
   async update(@CurrentUser() user: User, @Body() body: any) {
-    return this.userService.update(user.id, body)
+    return this.userService.update(user.id, body);
   }
 
   @UseGuards(AuthGuard)
@@ -57,6 +76,6 @@ export class UserController {
     const user = await this.userService.findOne(id);
     if (!user) throw new NotFoundException('User not found.');
 
-    return this.userService.remove(id)
+    return this.userService.remove(id);
   }
 }

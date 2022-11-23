@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { AppController } from './app.controller';
@@ -26,9 +25,10 @@ import { Record } from './modules/record/record.entity';
 import { RolePermission } from './modules/role-permission/role-permission.entity';
 import { Role } from './modules/role/role.entity';
 import { RoleModule } from './modules/role/role.module';
-import { RoleService } from './modules/role/role.service';
 import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { CompanyTypeModule } from './modules/company-type/company-type.module';
+import { CompanyModule } from './modules/company/company.module';
 
 @Module({
   imports: [
@@ -36,14 +36,38 @@ import { UserModule } from './modules/user/user.module';
       type: 'postgres',
       // database: 'db.sqlite',
       url: 'postgresql://postgres:faraz1412@localhost:5432/audit-simple',
-      entities: [Action, City, ClientAssignment, Company, CompanyType, ContactInformation, ContactInformationType, Country, Designation, Document, Employee, FirmClient, FirmInfo, Folder, EModule, Permission, Record, Role, RolePermission, User, Attachment],
+      entities: [
+        Action,
+        City,
+        ClientAssignment,
+        Company,
+        CompanyType,
+        ContactInformation,
+        ContactInformationType,
+        Country,
+        Designation,
+        Document,
+        Employee,
+        FirmClient,
+        FirmInfo,
+        Folder,
+        EModule,
+        Permission,
+        Record,
+        Role,
+        RolePermission,
+        User,
+        Attachment,
+      ],
       synchronize: true,
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
     }),
     UserModule,
-    RoleModule
+    RoleModule,
+    CompanyModule,
+    CompanyTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,25 +1,38 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { ClientAssignment } from "../client-assignment/client-assignment.entity";
-import { Document } from "../document/document.entity";
-import { Employee } from "../emlpoyee/employee.entity";
-import { Record } from "../record/record.entity";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
+import { ClientAssignment } from '../client-assignment/client-assignment.entity';
+import { Document } from '../document/document.entity';
+import { Employee } from '../emlpoyee/employee.entity';
+import { Record } from '../record/record.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => ClientAssignment, (client_assignment) => client_assignment.user, { nullable: true })
-  client_assignments: ClientAssignment[]
+  @OneToMany(
+    () => ClientAssignment,
+    (client_assignment) => client_assignment.user,
+    { nullable: true },
+  )
+  client_assignments: ClientAssignment[];
 
   @OneToMany(() => Document, (document) => document.uploaded_by)
-  documents: Document[]
+  documents: Document[];
 
   @OneToMany(() => Document, (document) => document.reviewed_by)
-  docs: Document[]
+  docs: Document[];
 
   @OneToMany(() => Employee, (employee) => employee.user)
-  employees: Employee[]
+  employees: Employee[];
 
   @OneToMany(() => Record, (record) => record.created_by)
   records: Record[];
@@ -41,14 +54,20 @@ export class User {
 
   @Column({ default: false })
   is_active: boolean;
-  
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public created_at: Date;
-  
-  @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updated_at: Date;
-  
-  @Column({ type: "timestamp", nullable: true })
-  is_deleted: Date;
-    
+
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }

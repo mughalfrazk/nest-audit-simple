@@ -1,14 +1,17 @@
 export const roleSeeder = [
   {
-    name: 'super_admin',
+    name: 'Super Admin',
+    identifier: 'super_admin',
     description: 'User with all the permissions.',
   },
   {
-    name: 'firm',
-    description: 'Firm owner role.'
+    name: 'Admin',
+    identifier: 'admin',
+    description: 'Firm owner role.',
   },
   {
-    name: 'employee',
-    description: 'Employees of a firm.'
-  }
-]
+    name: 'Employee',
+    identifier: 'employee',
+    description: 'Employees of a firm.',
+  },
+];

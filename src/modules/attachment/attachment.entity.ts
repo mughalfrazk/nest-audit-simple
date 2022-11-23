@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Module } from "../module/module.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Module } from '../module/module.entity';
 
 @Entity()
 export class Attachment {
@@ -7,18 +7,17 @@ export class Attachment {
   id: number;
 
   @ManyToOne(() => Module, (module) => module.attachments)
-  attachmentable_type: Module
+  attachmentable_type: Module;
 
   @Column()
   attachmentable_id: number;
 
   @Column()
-  name: string
+  name: string;
 
   @Column()
-  type: string
+  type: string;
 
   @Column()
   path: string;
-
 }

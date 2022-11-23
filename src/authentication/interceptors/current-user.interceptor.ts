@@ -1,8 +1,8 @@
 import {
-  NestInterceptor,
-  ExecutionContext,
   CallHandler,
+  ExecutionContext,
   Injectable,
+  NestInterceptor,
 } from '@nestjs/common';
 import { UserService } from '../../modules/user/user.service';
 
@@ -15,8 +15,7 @@ export class CurrentUserInterceptor implements NestInterceptor {
     const { userId } = request.session;
 
     if (userId) {
-      const user = await this.userService.findOne(userId);
-      request.currentUser = user;
+      request.currentUser = await this.userService.findOne(userId);
     }
 
     return handler.handle();

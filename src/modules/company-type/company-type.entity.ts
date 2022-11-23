@@ -1,5 +1,13 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Company } from "../company/company.entity";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Company } from '../company/company.entity';
 
 @Entity()
 export class CompanyType {
@@ -7,11 +15,27 @@ export class CompanyType {
   id: number;
 
   @OneToMany(() => Company, (company) => company.company_type)
-  companies: Company[]
+  companies: Company[];
 
   @Column()
   name: string;
 
   @Column()
   description: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }

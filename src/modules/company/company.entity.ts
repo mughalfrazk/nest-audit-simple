@@ -1,21 +1,33 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { ClientAssignment } from "../client-assignment/client-assignment.entity";
-import { CompanyType } from "../company-type/company-type.entity";
-import { Designation } from "../designation/designation.entity";
-import { Document } from "../document/document.entity";
-import { FirmClient } from "../firm-client/firm-client.entity";
-import { FirmInfo } from "../firm-info/firm-info.entity";
-import { Folder } from "../folder/folder.entity";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { ClientAssignment } from '../client-assignment/client-assignment.entity';
+import { CompanyType } from '../company-type/company-type.entity';
+import { Designation } from '../designation/designation.entity';
+import { Document } from '../document/document.entity';
+import { FirmClient } from '../firm-client/firm-client.entity';
+import { FirmInfo } from '../firm-info/firm-info.entity';
+import { Folder } from '../folder/folder.entity';
 
 @Entity()
 export class Company {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => CompanyType, (company_type) => company_type.companies)
+  @ManyToOne(() => CompanyType, (company_type) => company_type.companies, { nullable: false })
   company_type: CompanyType;
 
-  @OneToMany(() => ClientAssignment, (client_assignment) => client_assignment.company)
+  @OneToMany(
+    () => ClientAssignment,
+    (client_assignment) => client_assignment.company,
+  )
   client_assignments: ClientAssignment[];
 
   @OneToMany(() => Designation, (designation) => designation.company)
@@ -41,4 +53,20 @@ export class Company {
 
   @Column()
   abbreviation: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }

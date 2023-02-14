@@ -24,7 +24,7 @@ export class RoleController {
 
   @Get('/')
   async index() {
-    return await this.roleService.find();
+    return await this.roleService.findBy();
   }
 
   @Get('/:id')

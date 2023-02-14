@@ -9,7 +9,6 @@ export class CompanyService {
 
   async create(company) {
     const { name, abbreviation, company_type } = company;
-    console.log(company);
 
     const entity = await this.repo.create({
       name,

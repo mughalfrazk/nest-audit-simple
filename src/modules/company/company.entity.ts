@@ -15,6 +15,7 @@ import { Document } from '../document/document.entity';
 import { FirmClient } from '../firm-client/firm-client.entity';
 import { FirmInfo } from '../firm-info/firm-info.entity';
 import { Folder } from '../folder/folder.entity';
+import { Employee } from "../emlpoyee/employee.entity";
 
 @Entity()
 export class Company {
@@ -47,6 +48,9 @@ export class Company {
 
   @OneToMany(() => FirmInfo, (firm_info) => firm_info.company)
   infos: FirmInfo[];
+
+  @OneToMany(() => Employee, (employee) => employee.firm)
+  employees: Employee[];
 
   @Column()
   name: string;

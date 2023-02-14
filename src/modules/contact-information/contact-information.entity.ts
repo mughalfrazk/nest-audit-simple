@@ -1,15 +1,24 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { City } from "../city/city.entity";
-import { ContactInformationType } from "../contact-information-type/contact-information-type.entity";
-import { Country } from "../country/country.entity";
-import { Module } from "../module/module.entity";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { City } from '../city/city.entity';
+import { ContactInformationType } from '../contact-information-type/contact-information-type.entity';
+import { Country } from '../country/country.entity';
+import { Module } from '../module/module.entity';
 
 @Entity()
 export class ContactInformation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => ContactInformationType, (contact_information_type) => contact_information_type.contact_informations)
+  @ManyToOne(
+    () => ContactInformationType,
+    (contact_information_type) => contact_information_type.contact_informations,
+  )
   contact_information_type: ContactInformationType;
 
   @ManyToOne(() => City, (city) => city.contact_informations)
@@ -19,10 +28,10 @@ export class ContactInformation {
   country: Country;
 
   @ManyToOne(() => Module, (module) => module.contact_informations)
-  contactable_type: Module
+  contactable_type: Module;
 
   @Column()
-  contactable_id: number
+  contactable_id: number;
 
   @Column()
   phone: string;

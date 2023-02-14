@@ -1,9 +1,14 @@
-import { OneToMany } from 'typeorm';
+import {
+  CreateDateColumn,
+  DeleteDateColumn,
+  OneToMany,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Designation } from '../designation/designation.entity';
-import { Module } from '../module/module.entity';
 import { Role } from '../role/role.entity';
 import { User } from '../user/user.entity';
+import { Company } from '../company/company.entity';
 
 @Entity()
 export class Employee {
@@ -19,12 +24,25 @@ export class Employee {
   @ManyToOne(() => Role, (role) => role.employees)
   role: Role;
 
-  @ManyToOne(() => Module, (module) => module.employees)
-  employable_type: Module;
-
-  @Column()
-  employable_id: number;
+  @ManyToOne(() => Company, (company) => company.firms)
+  firm: Company;
 
   @Column()
   employee_no: string;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }

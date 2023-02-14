@@ -1,14 +1,37 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Company } from "../company/company.entity";
+import {
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Company } from '../company/company.entity';
 
 @Entity()
 export class FirmClient {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @ManyToOne(() => Company, (company) => company.firms)
-  firm: Company
+  firm: Company;
 
   @ManyToOne(() => Company, (company) => company.clients)
-  client: Company
+  client: Company;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date;
+
+  @DeleteDateColumn()
+  deleted_at?: Date;
 }

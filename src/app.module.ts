@@ -29,6 +29,8 @@ import { User } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { CompanyTypeModule } from './modules/company-type/company-type.module';
 import { CompanyModule } from './modules/company/company.module';
+import { ContactInformationTypeModule } from './modules/contact-information-type/contact-information-type.module';
+import { DesignationModule } from "./modules/designation/designation.module";
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { CompanyModule } from './modules/company/company.module';
     RoleModule,
     CompanyModule,
     CompanyTypeModule,
+    ContactInformationTypeModule,
+    DesignationModule
   ],
   controllers: [AppController],
   providers: [AppService],

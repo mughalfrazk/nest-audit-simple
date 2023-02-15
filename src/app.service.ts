@@ -5,7 +5,6 @@ import { CompanyTypeService } from './modules/company-type/company-type.service'
 import { ContactInformationTypeService } from './modules/contact-information-type/contact-information-type.service';
 import { CompanyService } from './modules/company/company.service';
 import { DesignationService } from './modules/designation/designation.service';
-import { EmployeeService } from './modules/emlpoyee/employee.service';
 
 @Injectable()
 export class AppService implements OnApplicationBootstrap {
@@ -16,7 +15,6 @@ export class AppService implements OnApplicationBootstrap {
     private companyService: CompanyService,
     private designationService: DesignationService,
     private authService: AuthService,
-    private employeeService: EmployeeService
   ) {}
 
   async onApplicationBootstrap() {
@@ -25,13 +23,12 @@ export class AppService implements OnApplicationBootstrap {
 
   async runSeeder() {
     try {
-      // await this.roleService.seed();
-      // await this.companyTypeService.seed();
-      // await this.contactInformationTypeService.seed();
-      // await this.companyService.seed();
-      // await this.designationService.seed();
-      // await this.authService.seed();
-      // await this.employeeService.seed();
+      await this.roleService.seed();
+      await this.companyTypeService.seed();
+      await this.contactInformationTypeService.seed();
+      await this.companyService.seed();
+      await this.designationService.seed();
+      await this.authService.seed();
     } catch (error) {
       
     }

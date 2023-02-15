@@ -8,13 +8,17 @@ export class UserService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async create(user) {
-    const { first_name, last_name, email, password } = user;
+    const { first_name, last_name, employee_no, role, company, designation, email, password } = user;
 
     const entity = await this.repo.create({
       first_name,
       last_name,
       email,
       password,
+      employee_no,
+      role,
+      company,
+      designation
     });
     return this.repo.save(entity);
   }

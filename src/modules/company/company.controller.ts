@@ -18,7 +18,6 @@ import { workspaceName } from '../../services/utils/functions';
 import { FirmClientService } from '../firm-client/firm-client.service';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update=company.dto';
-import { EmployeeService } from '../emlpoyee/employee.service';
 import { RoleService } from '../role/role.service';
 import { AuthService } from 'src/authentication/auth.service';
 

@@ -8,5 +8,6 @@ export const userSeeder = [
     last_name: 'Admin',
     email: 'sa@audit-simple.com',
     password: 'password',
+    role_name: 'Super Admin',
   },
 ];

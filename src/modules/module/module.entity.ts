@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Attachment } from '../attachment/attachment.entity';
 import { ContactInformation } from '../contact-information/contact-information.entity';
-import { Employee } from '../emlpoyee/employee.entity';
 import { Permission } from '../permission/permission.entity';
 import { Record } from '../record/record.entity';
 

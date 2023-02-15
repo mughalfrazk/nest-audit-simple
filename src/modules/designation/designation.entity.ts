@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Company } from '../company/company.entity';
-import { Employee } from '../emlpoyee/employee.entity';
+import { User } from '../user/user.entity';
 
 @Entity()
 export class Designation {
@@ -19,8 +19,8 @@ export class Designation {
   @ManyToOne(() => Company, (company) => company.designations)
   company: Company;
 
-  @OneToMany(() => Employee, (employee) => employee.designation)
-  employees: Employee[];
+  @OneToMany(() => User, (user) => user.designation)
+  users: User[];
 
   @Column()
   name: string;

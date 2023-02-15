@@ -6,16 +6,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn, DeleteDateColumn
 } from "typeorm";
-import { Employee } from '../emlpoyee/employee.entity';
 import { RolePermission } from '../role-permission/role-permission.entity';
+import { User } from "../user/user.entity";
 
 @Entity()
 export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => Employee, (employee) => employee.role)
-  employees: Employee[];
+  @OneToMany(() => User, (user) => user.role)
+  users: User[];
 
   @OneToMany(() => RolePermission, (role_permission) => role_permission.role)
   role_permissions: RolePermission[];

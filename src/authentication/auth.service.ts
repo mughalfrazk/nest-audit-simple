@@ -7,10 +7,7 @@ import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { UserService } from '../modules/user/user.service';
 import { userSeeder } from 'src/modules/user/user.seeder';
 import { promisify } from 'util';
-import { EmployeeService } from 'src/modules/emlpoyee/employee.service';
-import { DesignationService } from 'src/modules/designation/designation.service';
 import { RoleService } from 'src/modules/role/role.service';
-import { CompanyService } from 'src/modules/company/company.service';
 
 const scrypt = promisify(_scrypt);
 
@@ -18,6 +15,7 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
   constructor(
     private usersService: UserService,
+    private roleService: RoleService,
   ) {}
 
   async signup(body) {
@@ -55,7 +53,11 @@ export class AuthService {
       for (let i = 0; i < userSeeder.length; i++) {
         const element = userSeeder[i];
         const entity = await this.usersService.findBy(element.email);
-        if (!entity.length) await this.signup(element)
+        if (!entity.length) {
+          const [role] = await this.roleService.findBy(element.role_name);
+          element['role'] = role
+          if (!!role) await this.signup(element)
+        }
       }
       console.log('Seeding done! User');
     } catch (error) {

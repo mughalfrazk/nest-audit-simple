@@ -15,7 +15,6 @@ import { ContactInformation } from './modules/contact-information/contact-inform
 import { Country } from './modules/country/country.entity';
 import { Designation } from './modules/designation/designation.entity';
 import { Document } from './modules/document/document.entity';
-import { Employee } from './modules/emlpoyee/employee.entity';
 import { FirmClient } from './modules/firm-client/firm-client.entity';
 import { FirmInfo } from './modules/firm-info/firm-info.entity';
 import { Folder } from './modules/folder/folder.entity';
@@ -31,7 +30,6 @@ import { CompanyTypeModule } from './modules/company-type/company-type.module';
 import { CompanyModule } from './modules/company/company.module';
 import { ContactInformationTypeModule } from './modules/contact-information-type/contact-information-type.module';
 import { DesignationModule } from "./modules/designation/designation.module";
-import { EmployeeModule } from './modules/emlpoyee/employee.module';
 
 @Module({
   imports: [
@@ -50,7 +48,6 @@ import { EmployeeModule } from './modules/emlpoyee/employee.module';
         Country,
         Designation,
         Document,
-        Employee,
         FirmClient,
         FirmInfo,
         Folder,
@@ -70,8 +67,7 @@ import { EmployeeModule } from './modules/emlpoyee/employee.module';
     CompanyModule,
     CompanyTypeModule,
     ContactInformationTypeModule,
-    DesignationModule,
-    EmployeeModule
+    DesignationModule
   ],
   controllers: [AppController],
   providers: [AppService],

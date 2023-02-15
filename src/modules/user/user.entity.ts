@@ -9,9 +9,11 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { ClientAssignment } from '../client-assignment/client-assignment.entity';
+import { Company } from '../company/company.entity';
+import { Designation } from '../designation/designation.entity';
 import { Document } from '../document/document.entity';
-import { Employee } from '../emlpoyee/employee.entity';
 import { Record } from '../record/record.entity';
+import { Role } from '../role/role.entity';
 
 @Entity()
 export class User {
@@ -31,11 +33,20 @@ export class User {
   @OneToMany(() => Document, (document) => document.reviewed_by)
   docs: Document[];
 
-  @OneToMany(() => Employee, (employee) => employee.user)
-  employees: Employee[];
-
   @OneToMany(() => Record, (record) => record.created_by)
   records: Record[];
+
+  @ManyToOne(() => Designation, (designation) => designation.users)
+  designation: Designation;
+
+  @ManyToOne(() => Role, (role) => role.users, { nullable: false })
+  role: Role;
+
+  @ManyToOne(() => Company, (company) => company.firms)
+  company: Company;
+
+  @Column({ nullable: true })
+  employee_no: string;
 
   @Column({ nullable: true })
   first_name: string;

@@ -1,7 +1,6 @@
 import {
   CreateDateColumn,
   DeleteDateColumn,
-  OneToMany,
   UpdateDateColumn,
 } from 'typeorm';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -15,17 +14,17 @@ export class Employee {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.employees)
+  @ManyToOne(() => User, (user) => user.employees, { nullable: false })
   user: User;
 
   @ManyToOne(() => Designation, (designation) => designation.employees)
   designation: Designation;
 
-  @ManyToOne(() => Role, (role) => role.employees)
+  @ManyToOne(() => Role, (role) => role.employees, { nullable: false })
   role: Role;
 
-  @ManyToOne(() => Company, (company) => company.firms)
-  firm: Company;
+  @ManyToOne(() => Company, (company) => company.firms, { nullable: false })
+  company: Company;
 
   @Column()
   employee_no: string;

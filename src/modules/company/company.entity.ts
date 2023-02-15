@@ -49,7 +49,7 @@ export class Company {
   @OneToMany(() => FirmInfo, (firm_info) => firm_info.company)
   infos: FirmInfo[];
 
-  @OneToMany(() => Employee, (employee) => employee.firm)
+  @OneToMany(() => Employee, (employee) => employee.company)
   employees: Employee[];
 
   @Column()

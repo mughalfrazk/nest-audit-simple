@@ -22,7 +22,9 @@ export class CompanyTypeService {
 
   async findOne(id: number): Promise<CompanyType> | null {
     if (!id) return null;
-    return await this.repo.findOneBy({ id });
+    const type = await this.repo.findOneBy({ id });
+    if (!!type.deleted_at) return null;
+    return type;
   }
 
   async find() {
@@ -35,11 +37,19 @@ export class CompanyTypeService {
   }
 
   async seed() {
-    companyTypeSeeder.forEach(async (element) => {
-      const type = await this.findBy(element.name);
-      if (!type.length) this.repo.save(element);
-    });
+    try {
+      let dataArray = [];
 
-    console.log('Seeding done! Company Type');
+      for (let i = 0; i < companyTypeSeeder.length; i++) {
+        const element = companyTypeSeeder[i];
+        const entity = await this.findBy(element.name);
+        if (!entity.length) dataArray.push(element)
+      }
+      
+      if (!!dataArray.length) await this.repo.save(dataArray);
+      console.log('Seeding done! Company Types');
+    } catch (error) {
+      console.log("Seeding error! Company Types => ", error)
+    }
   }
 }

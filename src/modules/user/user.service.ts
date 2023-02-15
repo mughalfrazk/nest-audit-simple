@@ -23,29 +23,21 @@ export class UserService {
     if (!id) return null;
     const user = await this.repo.findOneBy({ id });
 
-    // if (user.is_deleted) return null;
+    if (user.deleted_at) return null;
     return user;
   }
 
-  find(email: string) {
+  findBy(email: string) {
     if (!email) return null;
-    // return this.repo.find({ email, is_deleted: IsNull() })
-    return this.repo.findBy({ email });
+    return this.repo.findBy({ email, deleted_at: IsNull() });
   }
 
   async update(id: number, attrs: Partial<User>) {
     const { first_name, last_name } = attrs;
-
-    // Object.assign(user, { first_name, last_name });
-    // user.first_name = first_name;
-    // user.last_name = last_name;
     return this.repo.update(id, { first_name, last_name });
   }
 
   async remove(id: number) {
-    // const user = await this.findOne(id);
-
-    // user.is_deleted = new Date();
     return this.repo.update(id, { deleted_at: new Date() });
   }
 }

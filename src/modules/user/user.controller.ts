@@ -18,9 +18,9 @@ import { CurrentUser } from '../../authentication/decorators/current-user.decora
 import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
-import { IUser } from './user.interface';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from './dtos/creare-user.dto';
 
 @ApiTags('Authentication')
 @Controller('user')
@@ -39,7 +39,7 @@ export class UserController {
 
   @Post('/auth/signup')
   @Serialize(UserDto)
-  async createUser(@Body() body: IUser, @Session() session: any) {
+  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
     const user = await this.authService.signup(body);
     session.userId = user.id;
     return user;
@@ -51,7 +51,7 @@ export class UserController {
     const user = await this.authService.signin(body.email, body.password);
 
     if (!user.is_active) throw new UnauthorizedException('User is Inactive.');
-    // if (user.deleted_at) throw new NotFoundException('User no longer exists.');
+    // if (user.deleted_at) throw new NotFoundException('User can not be found.');
     if (!user.is_verified)
       throw new UnauthorizedException('User verification required.');
 

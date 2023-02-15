@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Role } from './role.entity';
 import { toSnakeCase } from '../../services/utils/functions';
 import { roleSeeder } from './role.seeder';
@@ -19,12 +19,12 @@ export class RoleService {
   }
 
   async findOne(id: number): Promise<Role> | null {
-    return this.repo.findOneBy({ id });
+    return this.repo.findOneBy({ id, deleted_at: IsNull() });
   }
 
   async findBy(name?: string) {
     if (!name) return this.repo.find();
-    return this.repo.findBy({ name });
+    return this.repo.findBy({ name, deleted_at: IsNull() });
   }
 
   async update(id: number, attrs: Partial<Role>) {
@@ -43,11 +43,19 @@ export class RoleService {
   }
 
   async seed() {
-    roleSeeder.forEach(async (element) => {
-      const entity = await this.findBy(element.name);
-      if (!entity.length) this.repo.save(element);
-    });
+    try {
+      let dataArray = [];
 
-    console.log('Seeding done! Roles');
+      for (let i = 0; i < roleSeeder.length; i++) {
+        const element = roleSeeder[i];
+        const entity = await this.findBy(element.name);
+        if (!entity.length) dataArray.push(element)
+      }
+      
+      if (!!dataArray.length) await this.repo.save(dataArray);
+      console.log('Seeding done! Roles');
+    } catch (error) {
+      console.log("Seeding error! Roles => ", error)
+    }
   }
 }

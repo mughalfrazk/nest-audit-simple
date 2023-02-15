@@ -51,11 +51,19 @@ export class ContactInformationTypeService {
   }
 
   async seed() {
-    contactInformationTypeSeeder.forEach(async (element) => {
-      const contactInfo = await this.findBy(element.name);
-      if (!contactInfo.length) this.repo.save(element);
-    });
+    try {
+      let dataArray = [];
 
-    console.log('Seeding done! Contact Information Type');
+      for (let i = 0; i < contactInformationTypeSeeder.length; i++) {
+        const element = contactInformationTypeSeeder[i];
+        const entity = await this.findBy(element.name);
+        if (!entity.length) dataArray.push(element)
+      }
+      
+      if (!!dataArray.length) await this.repo.save(dataArray);
+      console.log('Seeding done! Contact Information');
+    } catch (error) {
+      console.log("Seeding error! Contact Information => ", error)
+    }
   }
 }

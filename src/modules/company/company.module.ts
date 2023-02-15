@@ -6,6 +6,9 @@ import { CompanyService } from './company.service';
 import { CompanyTypeModule } from '../company-type/company-type.module';
 import { FirmInfoModule } from '../firm-info/firm-info.module';
 import { FirmClientModule } from '../firm-client/firm-client.module';
+import { EmployeeModule } from '../emlpoyee/employee.module';
+import { UserModule } from '../user/user.module';
+import { RoleModule } from '../role/role.module';
 
 @Module({
   imports: [
@@ -13,6 +16,8 @@ import { FirmClientModule } from '../firm-client/firm-client.module';
     CompanyTypeModule,
     FirmInfoModule,
     FirmClientModule,
+    UserModule,
+    RoleModule
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

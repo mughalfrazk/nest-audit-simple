@@ -25,10 +25,15 @@ export class UserService {
 
   async findOne(id: number): Promise<User> | null {
     if (!id) return null;
-    const user = await this.repo.findOneBy({ id });
+    const user = await this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] });
 
-    if (user.deleted_at) return null;
+    if (user?.deleted_at) return null;
     return user;
+  }
+
+  findDetailedBy(email: string) {
+    if (!email) return null;
+    return this.repo.find({ where: { email, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] })
   }
 
   findBy(email: string) {

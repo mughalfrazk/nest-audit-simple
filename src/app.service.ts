@@ -12,8 +12,6 @@ export class AppService implements OnApplicationBootstrap {
     private roleService: RoleService,
     private companyTypeService: CompanyTypeService,
     private contactInformationTypeService: ContactInformationTypeService,
-    private companyService: CompanyService,
-    private designationService: DesignationService,
     private authService: AuthService,
   ) {}
 
@@ -26,8 +24,6 @@ export class AppService implements OnApplicationBootstrap {
       await this.roleService.seed();
       await this.companyTypeService.seed();
       await this.contactInformationTypeService.seed();
-      await this.companyService.seed();
-      await this.designationService.seed();
       await this.authService.seed();
     } catch (error) {
       

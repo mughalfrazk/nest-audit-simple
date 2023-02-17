@@ -18,6 +18,13 @@ export class AuthService {
     private roleService: RoleService,
   ) {}
 
+  async createUserByRole(data, role) {
+    let [roleEntity] = await this.roleService.findBy(role);
+    data['role'] = roleEntity;
+    console.log(data)
+    return this.signup(data);
+  }
+
   async signup(body) {
     const { email, password } = body;
 
@@ -37,7 +44,7 @@ export class AuthService {
   }
 
   async signin(email: string, password: string) {
-    const [user] = await this.usersService.findBy(email);
+    const [user] = await this.usersService.findDetailedBy(email);
     if (!user) throw new NotFoundException('User not found.');
 
     const [salt, storedHash] = user.password.split('.');

@@ -4,6 +4,7 @@ import { IsNull, Repository } from 'typeorm';
 import { Role } from './role.entity';
 import { toSnakeCase } from '../../services/utils/functions';
 import { roleSeeder } from './role.seeder';
+import { IRole } from './IRole';
 
 @Injectable()
 export class RoleService {
@@ -18,7 +19,7 @@ export class RoleService {
     return this.repo.save(entity);
   }
 
-  async findOne(id: number): Promise<Role> | null {
+  async findOne(id: number): Promise<IRole> | null {
     return this.repo.findOneBy({ id, deleted_at: IsNull() });
   }
 

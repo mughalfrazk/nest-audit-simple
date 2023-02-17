@@ -34,7 +34,7 @@ export class Company {
   @OneToMany(() => Designation, (designation) => designation.company)
   designations: Designation[];
 
-  @OneToMany(() => Folder, (folder) => folder.firm)
+  @OneToMany(() => Folder, (folder) => folder.client)
   folders: Folder[];
 
   @OneToMany(() => Document, (document) => document.client)

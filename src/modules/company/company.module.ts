@@ -15,8 +15,7 @@ import { RoleModule } from '../role/role.module';
     CompanyTypeModule,
     FirmInfoModule,
     FirmClientModule,
-    UserModule,
-    RoleModule
+    UserModule
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

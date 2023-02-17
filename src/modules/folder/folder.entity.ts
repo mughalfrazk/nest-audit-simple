@@ -7,8 +7,8 @@ export class Folder {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Company, (company) => company.folders)
-  firm: Company
+  @ManyToOne(() => Company, (company) => company.folders, { nullable: false })
+  company: Company
 
   @OneToMany(() => Document, (document) => document.folder)
   documents: Document[]
@@ -19,12 +19,12 @@ export class Folder {
   @OneToMany(() => Folder, (folder) => folder.parent)
   children: Folder[]
 
-  @Column()
+  @Column({ nullable: true, default: 0 })
   level_no: number
 
   @Column()
   name: string
 
-  @Column()
+  @Column({ nullable: true })
   description: string
 }

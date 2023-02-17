@@ -14,10 +14,10 @@ export class Document {
   @ManyToOne(() => Folder, (folder) => folder.documents)
   folder: Folder
 
-  @ManyToOne(() => User, (user) => user.documents)
+  @ManyToOne(() => User, (user) => user.documents, { nullable: false })
   uploaded_by: User
 
-  @ManyToOne(() => User, (user) => user.docs)
+  @ManyToOne(() => User, (user) => user.docs, { nullable: false })
   reviewed_by: User
 
   @Column()

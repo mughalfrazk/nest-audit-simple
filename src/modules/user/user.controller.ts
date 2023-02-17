@@ -20,7 +20,10 @@ import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dtos/creare-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { RoleService } from '../role/role.service';
+import { CompanyService } from '../company/company.service';
+import { DesignationService } from '../designation/designation.service';
 
 @ApiTags('Authentication')
 @Controller('user')
@@ -28,6 +31,7 @@ export class UserController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private roleService: RoleService,
   ) {}
 
   @Get('/auth/whoami')
@@ -40,8 +44,16 @@ export class UserController {
   @Post('/auth/signup')
   @Serialize(UserDto)
   async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    let role;
+
+    if (!!body.role_id) role = await this.roleService.findOne(body.role_id);
+    if (!role || role.identifier === 'super_admin') throw new BadRequestException('Please define a valid role.')
+
+    body['role'] = role?.id;
+    body['company'] = body.company_id;
+    body['designation'] = body.designation_id;
+
     const user = await this.authService.signup(body);
-    session.userId = user.id;
     return user;
   }
 
@@ -51,17 +63,17 @@ export class UserController {
     const user = await this.authService.signin(body.email, body.password);
 
     if (!user.is_active) throw new UnauthorizedException('User is Inactive.');
-    // if (user.deleted_at) throw new NotFoundException('User can not be found.');
-    if (!user.is_verified)
-      throw new UnauthorizedException('User verification required.');
+    if (!user.is_verified) throw new UnauthorizedException('User verification required.');
 
     session.userId = user.id;
+    session.role = user.role.identifier;
     return user;
   }
 
   @Get('/auth/signout')
   signOut(@Session() session: any) {
     session.userId = null;
+    session.role = null;
   }
 
   @UseGuards(AuthGuard)

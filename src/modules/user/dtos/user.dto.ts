@@ -1,4 +1,6 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { CompanyDto } from 'src/modules/company/dtos/company.dto';
+import { RoleDto } from 'src/modules/role/dtos/role.dto';
 
 export class UserDto {
   @Expose()
@@ -12,6 +14,13 @@ export class UserDto {
 
   @Expose()
   email: string;
+
+  @Expose()
+  // @Type(() => CompanyDto)
+  company: CompanyDto;
+
+  @Expose()
+  role: RoleDto
 
   @Expose()
   created_at: Date;

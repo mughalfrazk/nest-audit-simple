@@ -27,7 +27,6 @@ export class CompanyController {
   constructor(
     private companyService: CompanyService,
     private companyTypeService: CompanyTypeService,
-    private roleService: RoleService,
     private firmInfoService: FirmInfoService,
     private firmClientService: FirmClientService,
     private authService: AuthService
@@ -45,29 +44,44 @@ export class CompanyController {
 
   @Post('/')
   async create(@Body() body: CreateCompanyDto) {
-    const { company_type_id } = body;
-
+    const { company_type_id, name, abbreviation, firm_id, first_name, last_name, email, password } = body;
     const company_type = await this.companyTypeService.findOne(company_type_id);
-    
-    const companyInfo = { ...body, company_type };
+        
+    const checkComapny = await this.companyService.findBy(body.name);
+    if (!!checkComapny.length) throw new BadRequestException('Company already exists')
+
+    let firm;
+    if (company_type.name === 'Client') {
+      const firm = await this.companyService.findOne(firm_id);
+      if (!!firm) throw new BadRequestException('Invalid firm selected.')
+    }
+
+    const companyInfo = { name, abbreviation, company_type };
     const company = await this.companyService.create(companyInfo);
 
     if (company_type.name === 'Client') {
-      const firm = await this.companyService.findOne(body.firm_id);
-      let firm_client = await this.firmClientService.create({
-        firm,
-        client: company,
-      });
+      let firmInfo = { firm, client: company }
+      let firmClient = await this.firmClientService.create(firmInfo);
 
-      return { message: 'Company created!', data: firm_client, statusCode: 201 };
+      return { message: 'Company created!', data: firmClient, statusCode: 201 };
     }
 
-    let firm_info = await this.firmInfoService.create({
-      workspace: workspaceName(company.name),
+    let firmInfo = await this.firmInfoService.create({
+      workspace: workspaceName(company.abbreviation),
       company: company,
     });
 
-    return { message: 'Company created!', data: firm_info, statusCode: 201 };
+    let employee_data = {
+      first_name,
+      last_name,
+      email,
+      password,
+      company
+    }
+
+    const employee = await this.authService.createUserByRole(employee_data, 'Admin')
+
+    return { message: 'Company created!', data: {firmInfo, employee}, statusCode: 201 };
   }
 
   @Patch('/:id')

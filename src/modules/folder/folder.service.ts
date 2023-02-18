@@ -7,14 +7,16 @@ import { Folder } from './folder.entity';
 export class FolderService {
   constructor(@InjectRepository(Folder) private repo: Repository<Folder>) {}
 
-  async findOne(id: number): Promise<Folder> | null {
+  async findOne(id: number, relations): Promise<Folder> | null {
     if (!id) return null;
-    return await this.repo.findOneBy({ id });
+    return await this.repo.findOne({ where: { id }, relations });
   }
 
-  async find(options: any = null) {
-    if (!options) return this.repo.find({ where: { level_no: 0 }, relations: ['children'] });
-    return await this.repo.findBy({ client: 1 })
+  async find(options: any = null, relations: string[] = []) {
+    const { level_no = 0, name, client } = options;
+
+    if (!options) return null;
+    return this.repo.find({ where: { level_no, name, client: { id: client } }, relations });
   }
 
   async create(folder) {

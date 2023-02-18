@@ -31,6 +31,7 @@ import { CompanyModule } from './modules/company/company.module';
 import { ContactInformationTypeModule } from './modules/contact-information-type/contact-information-type.module';
 import { DesignationModule } from "./modules/designation/designation.module";
 import { FolderModule } from './modules/folder/folder.module';
+import { DocumentModule } from './modules/document/document.module';
 
 @Module({
   imports: [
@@ -69,7 +70,8 @@ import { FolderModule } from './modules/folder/folder.module';
     CompanyTypeModule,
     ContactInformationTypeModule,
     DesignationModule,
-    FolderModule
+    FolderModule,
+    DocumentModule
   ],
   controllers: [AppController],
   providers: [AppService],

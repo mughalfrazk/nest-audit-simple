@@ -8,7 +8,7 @@ export class Folder {
   id: number;
 
   @ManyToOne(() => Company, (company) => company.folders, { nullable: false })
-  company: Company
+  client: Company
 
   @OneToMany(() => Document, (document) => document.folder)
   documents: Document[]

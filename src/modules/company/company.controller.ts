@@ -20,6 +20,7 @@ import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update=company.dto';
 import { RoleService } from '../role/role.service';
 import { AuthService } from 'src/authentication/auth.service';
+import { UserService } from '../user/user.service';
 
 @ApiTags('Company')
 @Controller('company')
@@ -29,7 +30,8 @@ export class CompanyController {
     private companyTypeService: CompanyTypeService,
     private firmInfoService: FirmInfoService,
     private firmClientService: FirmClientService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   @Get('/')
@@ -53,7 +55,10 @@ export class CompanyController {
     let firm;
     if (company_type.name === 'Client') {
       const firm = await this.companyService.findOne(firm_id);
-      if (!!firm) throw new BadRequestException('Invalid firm selected.')
+      if (!firm) throw new BadRequestException('Invalid firm selected.')
+    } else {
+      const user = await this.userService.findBy(email);
+      if (!!user.length) throw new BadRequestException('Email already in use.')
     }
 
     const companyInfo = { name, abbreviation, company_type };

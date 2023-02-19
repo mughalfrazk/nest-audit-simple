@@ -1,4 +1,5 @@
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -18,6 +19,9 @@ export class FirmClient {
 
   @ManyToOne(() => Company, (company) => company.clients)
   client: Company;
+
+  @Column()
+  bucket_folder: string;
 
   @CreateDateColumn({
     type: 'timestamp',

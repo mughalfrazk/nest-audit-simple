@@ -1,7 +1,4 @@
-import { IsDate, IsNumber, IsOptional, IsString } from "class-validator";
-import { Company } from "src/modules/company/company.entity";
-import { Folder } from "src/modules/folder/folder.entity";
-import { User } from "src/modules/user/user.entity";
+import { IsDate, IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateDocumentDto {
   @IsString()
@@ -14,18 +11,18 @@ export class CreateDocumentDto {
   @IsString()
   path: string;
 
-  @IsDate()
-  audit_date: Date;
+  @IsDateString()
+  audit_date: string;
 
   @IsNumber()
-  folder: Folder;
+  folder: number;
 
   @IsNumber()
-  client: Company;
+  client: number;
 
   @IsNumber()
-  uploaded_by: User;
+  uploaded_by: number;
 
   @IsNumber()
-  reviewed_by: User;
+  reviewed_by: number;
 }

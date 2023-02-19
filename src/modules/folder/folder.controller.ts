@@ -1,7 +1,7 @@
 import { Controller, UseGuards, Body, Get, Post, Patch, Delete, Param, BadRequestException, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from 'src/authentication/decorators/current-user.decorator';
-import { AuthGuard } from 'src/authentication/guards/auth.guard';
+import { CurrentUser } from '../../authentication/decorators/current-user.decorator';
+import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { User } from '../user/user.entity';
 import { CreateFolderDto } from './dtos/create-folder.dto';
 import { FolderService } from "./folder.service";

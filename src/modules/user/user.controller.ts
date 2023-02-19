@@ -12,7 +12,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '../../interceptors/serialize.interceptor';
 import { AuthService } from '../../authentication/auth.service';
 import { CurrentUser } from '../../authentication/decorators/current-user.decorator';
 import { AuthGuard } from '../../authentication/guards/auth.guard';
@@ -22,8 +22,6 @@ import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { RoleService } from '../role/role.service';
-import { CompanyService } from '../company/company.service';
-import { DesignationService } from '../designation/designation.service';
 
 @ApiTags('Authentication')
 @Controller('user')

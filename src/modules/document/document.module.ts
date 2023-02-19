@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { S3Service } from "src/services/aws/s3.service";
+import { S3Service } from "../../services/aws/s3.service";
 import { DocumentController } from "./document.controller";
 import { Document } from "./document.entity";
 import { DocumentService } from "./document.service";
@@ -9,6 +9,6 @@ import { DocumentService } from "./document.service";
   imports: [TypeOrmModule.forFeature([Document])],
   controllers: [DocumentController],
   providers: [DocumentService, S3Service],
-  exports: [DocumentService]
+  exports: [DocumentService, S3Service]
 })
 export class DocumentModule {}

@@ -20,6 +20,9 @@ export class FirmInfo {
   @Column()
   workspace: string;
 
+  @Column()
+  bucket_name: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

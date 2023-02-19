@@ -10,28 +10,30 @@ export class CompanyService {
   constructor(@InjectRepository(Company) private repo: Repository<Company>) {}
 
   async create(company) {
-    const { name, abbreviation, company_type } = company;
+    const { name, abbreviation, company_type, workspace, bucket_name } = company;
 
     const entity = await this.repo.create({
       name,
       abbreviation,
       company_type,
+      workspace,
+      bucket_name
     });
     return this.repo.save(entity);
   }
 
   async findOne(id: number): Promise<Company> | null {
     if (!id) return null;
-    return await this.repo.findOneBy({ id });
+    return await this.repo.findOneBy({ id, deleted_at: IsNull() });
   }
 
   async find() {
     return await this.repo.find();
   }
 
-  async findBy(name: string) {
-    if (!name) return null;
-    return await this.repo.findBy({ name, deleted_at: IsNull() });
+  async findBy(options: { name?: string, abbreviation?: string }) {
+    if (!options) return null;
+    return await this.repo.findBy({ ...options, deleted_at: IsNull() });
   }
 
   async update(id: number, attrs: Partial<Company>) {

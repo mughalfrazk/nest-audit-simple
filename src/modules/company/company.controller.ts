@@ -15,11 +15,11 @@ import { CompanyTypeService } from '../company-type/company-type.service';
 import { ApiTags } from '@nestjs/swagger';
 import { FirmInfoService } from '../firm-info/firm-info.service';
 import { workspaceName } from '../../services/utils/functions';
+import { S3Service } from '../../services/aws/s3.service';
 import { FirmClientService } from '../firm-client/firm-client.service';
 import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update=company.dto';
-import { RoleService } from '../role/role.service';
-import { AuthService } from 'src/authentication/auth.service';
+import { AuthService } from '../../authentication/auth.service';
 import { UserService } from '../user/user.service';
 
 @ApiTags('Company')
@@ -31,7 +31,8 @@ export class CompanyController {
     private firmInfoService: FirmInfoService,
     private firmClientService: FirmClientService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private s3Service: S3Service
   ) {}
 
   @Get('/')
@@ -47,46 +48,45 @@ export class CompanyController {
   @Post('/')
   async create(@Body() body: CreateCompanyDto) {
     const { company_type_id, name, abbreviation, firm_id, first_name, last_name, email, password } = body;
+
     const company_type = await this.companyTypeService.findOne(company_type_id);
-        
-    const checkComapny = await this.companyService.findBy(body.name);
+    const isFirm = company_type.name === 'Firm';
+
+    const checkComapny = await this.companyService.findBy({ name });
     if (!!checkComapny.length) throw new BadRequestException('Company already exists')
 
+    const checkAbbreviation = await this.companyService.findBy({ abbreviation });
+    if (!!checkAbbreviation.length) throw new BadRequestException('Abbreviation not available')
+
     let firm;
-    if (company_type.name === 'Client') {
-      const firm = await this.companyService.findOne(firm_id);
+    if (!isFirm) {
+      // Check if the firm exist, if not error out.
+      firm = await this.companyService.findOne(firm_id);
       if (!firm) throw new BadRequestException('Invalid firm selected.')
     } else {
+      // Check if the email doesn't already exist, If it does error out.
       const user = await this.userService.findBy(email);
       if (!!user.length) throw new BadRequestException('Email already in use.')
     }
 
-    const companyInfo = { name, abbreviation, company_type };
+    let workspace = workspaceName(abbreviation);
+    const companyInfo = { name, abbreviation, company_type, workspace: isFirm ? workspace : undefined, bucket_name: isFirm ? workspace : undefined };
     const company = await this.companyService.create(companyInfo);
 
-    if (company_type.name === 'Client') {
-      let firmInfo = { firm, client: company }
-      let firmClient = await this.firmClientService.create(firmInfo);
+
+    if (!isFirm) {
+      let pivotInfo = { firm, client: company, bucket_folder: `${company.abbreviation}/` }
+      let firmClient = await this.firmClientService.create(pivotInfo);
+      await this.s3Service.createNewFolder(firm.bucket_name, company.abbreviation);
 
       return { message: 'Company created!', data: firmClient, statusCode: 201 };
     }
-
-    let firmInfo = await this.firmInfoService.create({
-      workspace: workspaceName(company.abbreviation),
-      company: company,
-    });
-
-    let employee_data = {
-      first_name,
-      last_name,
-      email,
-      password,
-      company
-    }
-
+    
+    await this.s3Service.createNewBucket(workspace);
+    let employee_data = { first_name, last_name, email, password, company }
     const employee = await this.authService.createUserByRole(employee_data, 'Admin')
 
-    return { message: 'Company created!', data: {firmInfo, employee}, statusCode: 201 };
+    return { message: 'Company created!', data: {company, employee}, statusCode: 201 };
   }
 
   @Patch('/:id')

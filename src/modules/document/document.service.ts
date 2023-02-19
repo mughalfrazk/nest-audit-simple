@@ -10,6 +10,6 @@ export class DocumentService {
   async create(body) {
     const { name, description, path, audit_date, folder, client, uploaded_by, reviewed_by } = body;
     
-    console.log(body);
+    return body;
   }
 }

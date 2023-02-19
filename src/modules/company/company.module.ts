@@ -8,6 +8,7 @@ import { FirmInfoModule } from '../firm-info/firm-info.module';
 import { FirmClientModule } from '../firm-client/firm-client.module';
 import { UserModule } from '../user/user.module';
 import { RoleModule } from '../role/role.module';
+import { DocumentModule } from '../document/document.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { RoleModule } from '../role/role.module';
     CompanyTypeModule,
     FirmInfoModule,
     FirmClientModule,
-    UserModule
+    UserModule,
+    DocumentModule
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

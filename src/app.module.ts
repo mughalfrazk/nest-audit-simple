@@ -32,6 +32,7 @@ import { ContactInformationTypeModule } from './modules/contact-information-type
 import { DesignationModule } from "./modules/designation/designation.module";
 import { FolderModule } from './modules/folder/folder.module';
 import { DocumentModule } from './modules/document/document.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -51,7 +52,6 @@ import { DocumentModule } from './modules/document/document.module';
         Designation,
         Document,
         FirmClient,
-        FirmInfo,
         Folder,
         EModule,
         Permission,
@@ -64,6 +64,7 @@ import { DocumentModule } from './modules/document/document.module';
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    ConfigModule.forRoot(),
     UserModule,
     RoleModule,
     CompanyModule,

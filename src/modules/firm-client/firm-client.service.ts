@@ -10,11 +10,12 @@ export class FirmClientService {
   ) {}
 
   async create(data: Partial<FirmClient>) {
-    const { firm, client } = data;
+    const { firm, client, bucket_folder } = data;
 
     const entity = this.repo.create({
       firm,
       client,
+      bucket_folder
     });
     return this.repo.save(entity);
   }

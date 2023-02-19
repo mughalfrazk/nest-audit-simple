@@ -46,9 +46,6 @@ export class Company {
   @OneToMany(() => FirmClient, (firm_client) => firm_client.client)
   clients: FirmClient[];
 
-  @OneToMany(() => FirmInfo, (firm_info) => firm_info.company)
-  infos: FirmInfo[];
-
   @OneToMany(() => User, (user) => user.company)
   employees: User[];
 
@@ -57,6 +54,12 @@ export class Company {
 
   @Column()
   abbreviation: string;
+
+  @Column({ nullable: true })
+  workspace: string;
+
+  @Column({ nullable: true })
+  bucket_name: string;
 
   @CreateDateColumn({
     type: 'timestamp',

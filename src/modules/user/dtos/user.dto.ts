@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
-import { CompanyDto } from 'src/modules/company/dtos/company.dto';
-import { RoleDto } from 'src/modules/role/dtos/role.dto';
+import { CompanyDto } from '../../company/dtos/company.dto';
+import { RoleDto } from '../../role/dtos/role.dto';
 
 export class UserDto {
   @Expose()

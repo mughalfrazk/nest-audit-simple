@@ -9,4 +9,7 @@ export class CompanyDto {
 
   @Expose()
   abbreviation: string;
+
+  @Expose()
+  bucket_name: string;
 }

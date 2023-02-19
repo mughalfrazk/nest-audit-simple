@@ -9,11 +9,12 @@ export class FirmInfoService {
   constructor(@InjectRepository(FirmInfo) private repo: Repository<FirmInfo>) {}
 
   async create(firmInfo) {
-    const { workspace, company } = firmInfo;
+    const { workspace, company, bucket_name } = firmInfo;
 
     const entity = await this.repo.create({
       workspace,
       company,
+      bucket_name
     });
     return this.repo.save(entity);
   }

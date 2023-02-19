@@ -17,7 +17,7 @@ export class Document {
   @ManyToOne(() => User, (user) => user.documents, { nullable: false })
   uploaded_by: User
 
-  @ManyToOne(() => User, (user) => user.docs, { nullable: false })
+  @ManyToOne(() => User, (user) => user.docs, { nullable: true })
   reviewed_by: User
 
   @Column()

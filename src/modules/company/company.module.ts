@@ -6,16 +6,13 @@ import { CompanyService } from './company.service';
 import { CompanyTypeModule } from '../company-type/company-type.module';
 import { FirmClientModule } from '../firm-client/firm-client.module';
 import { UserModule } from '../user/user.module';
-import { RoleModule } from '../role/role.module';
-import { DocumentModule } from '../document/document.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Company]),
     CompanyTypeModule,
     FirmClientModule,
-    UserModule,
-    DocumentModule
+    UserModule
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

@@ -75,7 +75,7 @@ export class CompanyController {
 
     if (!isFirm) {
       // Create relation of client with firm.
-      let pivotInfo = { firm, client: company, bucket_folder: `${company.abbreviation}/` }
+      let pivotInfo = { firm, client: company, bucket_folder: company.abbreviation }
       let firmClient = await this.firmClientService.create(pivotInfo);
       await this.s3Service.createNewFolder(firm.bucket_name, company.abbreviation);
 

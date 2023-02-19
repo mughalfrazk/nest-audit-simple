@@ -9,6 +9,10 @@ export class FirmClientService {
     @InjectRepository(FirmClient) private repo: Repository<FirmClient>,
   ) {}
 
+  async findBy(options, relations) {
+    return this.repo.find({ where: {...options}, relations })
+  }
+
   async create(data: Partial<FirmClient>) {
     const { firm, client, bucket_folder } = data;
 

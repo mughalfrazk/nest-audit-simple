@@ -16,7 +16,6 @@ import { Country } from './modules/country/country.entity';
 import { Designation } from './modules/designation/designation.entity';
 import { Document } from './modules/document/document.entity';
 import { FirmClient } from './modules/firm-client/firm-client.entity';
-import { FirmInfo } from './modules/firm-info/firm-info.entity';
 import { Folder } from './modules/folder/folder.entity';
 import { Module as EModule } from './modules/module/module.entity';
 import { Permission } from './modules/permission/permission.entity';
@@ -33,6 +32,7 @@ import { DesignationModule } from "./modules/designation/designation.module";
 import { FolderModule } from './modules/folder/folder.module';
 import { DocumentModule } from './modules/document/document.module';
 import { ConfigModule } from '@nestjs/config';
+import { S3Module } from './services/aws/s3.module';
 
 @Module({
   imports: [
@@ -65,6 +65,7 @@ import { ConfigModule } from '@nestjs/config';
       namingStrategy: new SnakeNamingStrategy(),
     }),
     ConfigModule.forRoot(),
+    S3Module,
     UserModule,
     RoleModule,
     CompanyModule,
@@ -74,7 +75,6 @@ import { ConfigModule } from '@nestjs/config';
     FolderModule,
     DocumentModule
   ],
-  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { S3 } from "aws-sdk";
+import * as fs from "fs";
+import * as path from "path";
 
 @Injectable()
 
@@ -39,16 +41,28 @@ export class S3Service {
   }
 
   async createNewFolder(Bucket: string, name: string) {
-    const params = { Bucket, Key: `${name}/`, Body: 'Client Folder' };
-    console.log(params)
     return new Promise((resolve, reject) => {
-      this.s3.upload (params, function (err, data) {
+      this.s3.upload ({ Bucket, Key: `${name}/`, Body: 'Client Folder' }, function (err, data) {
         if (err) {
           console.log("Error", err);
           reject(err)
         } if (data) {
           console.log("Upload Success", data.Location);
           resolve(data)
+        }
+      });
+    })
+  }
+
+  async uploadNewFile(Bucket: string, name: string, file: any) {
+    const params = { Bucket, Key: name, Body: file };
+
+    return new Promise((resolve, reject) => {
+      this.s3.upload (params, function (err, data) {
+        if (err) {
+          reject(err)
+        } if (data) {
+          resolve(data.Location)
         }
       });
     })

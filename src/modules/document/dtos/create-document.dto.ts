@@ -2,27 +2,18 @@ import { IsDate, IsDateString, IsNumber, IsOptional, IsString } from "class-vali
 
 export class CreateDocumentDto {
   @IsString()
-  name: string;
-
-  @IsString()
   @IsOptional()
   description: string;
-
-  @IsString()
-  path: string;
 
   @IsDateString()
   audit_date: string;
 
-  @IsNumber()
-  folder: number;
+  @IsString()
+  folder: string;
 
-  @IsNumber()
-  client: number;
+  @IsString()
+  client: string;
 
-  @IsNumber()
-  uploaded_by: number;
-
-  @IsNumber()
-  reviewed_by: number;
+  @IsString()
+  uploaded_by: string;
 }

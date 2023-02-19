@@ -7,9 +7,8 @@ import { Document } from "./document.entity";
 export class DocumentService {
   constructor(@InjectRepository(Document) private repo: Repository<Document>) {}
 
-  async create(body) {
-    const { name, description, path, audit_date, folder, client, uploaded_by, reviewed_by } = body;
-    
-    return body;
+  async create(body, file) {
+    const { name, description, path, audit_date, folder, client, uploaded_by } = body;
+    return this.repo.save({ name, description, path, audit_date, folder, client, uploaded_by });
   }
 }

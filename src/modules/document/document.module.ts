@@ -1,14 +1,16 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { S3Service } from "../../services/aws/s3.service";
+import { S3Module } from "../../services/aws/s3.module";
+import { CompanyModule } from "../company/company.module";
+import { FirmClientModule } from "../firm-client/firm-client.module";
 import { DocumentController } from "./document.controller";
 import { Document } from "./document.entity";
 import { DocumentService } from "./document.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Document])],
+  imports: [TypeOrmModule.forFeature([Document]), CompanyModule, FirmClientModule],
   controllers: [DocumentController],
-  providers: [DocumentService, S3Service],
-  exports: [DocumentService, S3Service]
+  providers: [DocumentService],
+  exports: [DocumentService]
 })
 export class DocumentModule {}

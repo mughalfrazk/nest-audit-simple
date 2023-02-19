@@ -21,7 +21,6 @@ export class AuthService {
   async createUserByRole(data, role) {
     let [roleEntity] = await this.roleService.findBy(role);
     data['role'] = roleEntity;
-    console.log(data)
     return this.signup(data);
   }
 

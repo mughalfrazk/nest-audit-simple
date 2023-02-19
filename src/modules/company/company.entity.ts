@@ -13,7 +13,6 @@ import { CompanyType } from '../company-type/company-type.entity';
 import { Designation } from '../designation/designation.entity';
 import { Document } from '../document/document.entity';
 import { FirmClient } from '../firm-client/firm-client.entity';
-import { FirmInfo } from '../firm-info/firm-info.entity';
 import { Folder } from '../folder/folder.entity';
 import { User } from '../user/user.entity';
 

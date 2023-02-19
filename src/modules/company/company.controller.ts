@@ -13,7 +13,6 @@ import {
 import { CompanyService } from './company.service';
 import { CompanyTypeService } from '../company-type/company-type.service';
 import { ApiTags } from '@nestjs/swagger';
-import { FirmInfoService } from '../firm-info/firm-info.service';
 import { workspaceName } from '../../services/utils/functions';
 import { S3Service } from '../../services/aws/s3.service';
 import { FirmClientService } from '../firm-client/firm-client.service';
@@ -28,7 +27,6 @@ export class CompanyController {
   constructor(
     private companyService: CompanyService,
     private companyTypeService: CompanyTypeService,
-    private firmInfoService: FirmInfoService,
     private firmClientService: FirmClientService,
     private authService: AuthService,
     private userService: UserService,
@@ -69,20 +67,25 @@ export class CompanyController {
       if (!!user.length) throw new BadRequestException('Email already in use.')
     }
 
+    // Create new company.
     let workspace = workspaceName(abbreviation);
     const companyInfo = { name, abbreviation, company_type, workspace: isFirm ? workspace : undefined, bucket_name: isFirm ? workspace : undefined };
     const company = await this.companyService.create(companyInfo);
 
 
     if (!isFirm) {
+      // Create relation of client with firm.
       let pivotInfo = { firm, client: company, bucket_folder: `${company.abbreviation}/` }
       let firmClient = await this.firmClientService.create(pivotInfo);
       await this.s3Service.createNewFolder(firm.bucket_name, company.abbreviation);
 
-      return { message: 'Company created!', data: firmClient, statusCode: 201 };
+      return { message: 'Client created!', data: firmClient, statusCode: 201 };
     }
     
+    // Create new s3 bucket for firm.
     await this.s3Service.createNewBucket(workspace);
+
+    // Create admin user for firm.
     let employee_data = { first_name, last_name, email, password, company }
     const employee = await this.authService.createUserByRole(employee_data, 'Admin')
 

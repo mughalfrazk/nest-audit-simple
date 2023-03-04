@@ -11,13 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { toSnakeCase } from '../../services/utils/functions';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Role')
-@UseGuards(AuthGuard)
 @Controller('role')
 export class RoleController {
   constructor(private roleService: RoleService) {}

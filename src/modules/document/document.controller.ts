@@ -5,12 +5,10 @@ import { S3Service } from "../../services/aws/s3.service";
 import { DocumentService } from "./document.service";
 import { CreateDocumentDto } from "./dtos/create-document.dto";
 import { CompanyService } from "../company/company.service";
-import { AuthGuard } from "../../authentication/guards/auth.guard";
 import { FirmClientService } from "../firm-client/firm-client.service";
 
 @ApiTags('Document')
 @Controller('document')
-@UseGuards(AuthGuard)
 export class DocumentController {
   constructor(
     private documentService: DocumentService,

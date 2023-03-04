@@ -2,11 +2,9 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { DesignationService } from './designation.service';
 import { CompanyService } from '../company/company.service';
 import { CreateDesignationDto } from './dtos/create-designation-dto';
-import { AuthGuard } from '../../authentication/guards/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Designation')
-@UseGuards(AuthGuard)
 @Controller('designation')
 export class DesignationController {
   constructor(

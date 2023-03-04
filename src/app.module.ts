@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Action } from './modules/action/action.entity';
 import { Attachment } from './modules/attachment/attachment.entity';
@@ -33,6 +32,7 @@ import { FolderModule } from './modules/folder/folder.module';
 import { DocumentModule } from './modules/document/document.module';
 import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './services/aws/s3.module';
+import { AuthModule } from './authentication/auth.module';
 
 @Module({
   imports: [
@@ -66,6 +66,7 @@ import { S3Module } from './services/aws/s3.module';
     }),
     ConfigModule.forRoot(),
     S3Module,
+    AuthModule,
     UserModule,
     RoleModule,
     CompanyModule,

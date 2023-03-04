@@ -3,8 +3,6 @@ import { AuthService } from './authentication/auth.service';
 import { RoleService } from './modules/role/role.service';
 import { CompanyTypeService } from './modules/company-type/company-type.service';
 import { ContactInformationTypeService } from './modules/contact-information-type/contact-information-type.service';
-import { CompanyService } from './modules/company/company.service';
-import { DesignationService } from './modules/designation/designation.service';
 
 @Injectable()
 export class AppService implements OnApplicationBootstrap {

@@ -7,7 +7,10 @@ import { CompanyTypeService } from '../company-type/company-type.service';
 
 @Injectable()
 export class CompanyService {
-  constructor(@InjectRepository(Company) private repo: Repository<Company>) {}
+  constructor(
+    @InjectRepository(Company) private repo: Repository<Company>,
+    private companyTypeService: CompanyTypeService
+  ) {}
 
   async create(company) {
     const { name, abbreviation, company_type, workspace, bucket_name } = company;
@@ -54,7 +57,7 @@ export class CompanyService {
 
     //   for (let i = 0; i < companySeeder.length; i++) {
     //     const element = companySeeder[i];
-    //     const entity = await this.findBy(element.name);
+    //     const entity = await this.findBy({name: element.name});
     //     if (!entity.length) {
     //       const [company_type] = await this.companyTypeService.findBy(element.company_type_name)
     //       if (!!company_type) {
@@ -64,6 +67,8 @@ export class CompanyService {
     //     }
     //   }
       
+    //   console.log(dataArray)
+
     //   if (!!dataArray.length) await this.repo.save(dataArray);
     //   console.log('Seeding done! Company');
     // } catch (error) {

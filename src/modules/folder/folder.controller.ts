@@ -1,6 +1,6 @@
 import { Controller, UseGuards, Body, Get, Post, Patch, Delete, Param, BadRequestException, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from '../../authentication/decorators/current-user.decorator';
+import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { User } from '../user/user.entity';
 import { CreateFolderDto } from './dtos/create-folder.dto';
 import { FolderService } from "./folder.service";
@@ -11,7 +11,7 @@ export class FolderController {
   constructor(private folderService: FolderService) {}
 
   @Get('/:id')
-  async index(@Param('id') id: number, @CurrentUser() user: User) {
+  async index(@Param('id') id: number, @GetAuthorizedUser() user: User) {
 
   }
 
@@ -22,7 +22,7 @@ export class FolderController {
   }
 
   @Post('/')
-  async create(@Body() body: CreateFolderDto, @CurrentUser() user: User) {
+  async create(@Body() body: CreateFolderDto, @GetAuthorizedUser() user: User) {
     const { name, client, parent } = body;
 
     let level_no = 0;

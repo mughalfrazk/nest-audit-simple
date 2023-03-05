@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CompanyTypeService } from '../company-type/company-type.service';
@@ -19,9 +20,13 @@ import { CreateCompanyDto } from './dtos/create-company.dto';
 import { UpdateCompanyDto } from './dtos/update=company.dto';
 import { UserService } from '../user/user.service';
 import { AuthService } from '../../authentication/auth.service';
+import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
+import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
+import { strings } from '../../services/constants/strings';
 
 @ApiTags('Company')
 @Controller('company')
+@UseGuards(JwtAuthGuard)
 export class CompanyController {
   constructor(
     private companyService: CompanyService,
@@ -33,12 +38,12 @@ export class CompanyController {
   ) {}
 
   @Get('/')
-  async index() {
+  async getAllFirms(@GetAuthorizedUser(strings.roles.SUPER_ADMIN) user) {
     return await this.companyService.find();
   }
 
   @Get('/:id')
-  async indexAll(@Param('id') id: number) {
+  async getById(@GetAuthorizedUser(strings.roles.ADMIN) user, @Param('id') id: number) {
     return await this.companyService.findOne(id);
   }
 

@@ -4,6 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../../modules/user/user.service';
 
 @Injectable()
@@ -12,11 +13,7 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
   async intercept(context: ExecutionContext, handler: CallHandler) {
     const request = context.switchToHttp().getRequest();
-    const { userId } = request.session;
-
-    if (userId) {
-      request.currentUser = await this.userService.findOne(userId);
-    }
+    if (request?.user.id) request.loggedInUser = await this.userService.findOne(request?.user.id);
 
     return handler.handle();
   }

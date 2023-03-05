@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 import { Serialize } from '../../interceptors/serialize.interceptor';
 import { AuthService } from '../../authentication/auth.service';
-import { CurrentUser } from '../../authentication/decorators/current-user.decorator';
 import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';

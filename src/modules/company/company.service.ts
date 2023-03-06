@@ -27,16 +27,16 @@ export class CompanyService {
 
   async findOne(id: number): Promise<Company> | null {
     if (!id) return null;
-    return await this.repo.findOneBy({ id, deleted_at: IsNull() });
+    return await this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company_type', 'firms.client', 'clients.firm', 'employees.role']});
   }
 
   async find() {
-    return await this.repo.find();
+    return await this.repo.find({ relations: ['company_type'] });
   }
 
-  async findBy(options: { name?: string, abbreviation?: string }) {
+  async findBy(options) {
     if (!options) return null;
-    return await this.repo.findBy({ ...options, deleted_at: IsNull() });
+    return await this.repo.find({ where: { ...options, deleted_at: IsNull() }, relations: ['company_type']});
   }
 
   async update(id: number, attrs: Partial<Company>) {

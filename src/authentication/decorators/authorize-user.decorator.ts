@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common/exceptions';
 import { strings } from '../../services/constants/strings';
 
 export const GetAuthorizedUser = createParamDecorator(
@@ -21,6 +22,6 @@ export const GetAuthorizedUser = createParamDecorator(
     else if (loggedInRole === strings.roles.ADMIN && authorizedRole === strings.roles.EMPLOYEE) allow = true
     
     if (allow) return request.loggedInUser;
-    throw new UnauthorizedException('Forbidden resource.'); 
+    throw new ForbiddenException('Forbidden resource.'); 
   },
 );

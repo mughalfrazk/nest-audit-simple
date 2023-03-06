@@ -9,6 +9,7 @@ import { UserService } from '../modules/user/user.service';
 import { userSeeder } from '../modules/user/user.seeder';
 import { promisify } from 'util';
 import { RoleService } from '../modules/role/role.service';
+import { addHours } from '../services/utils/functions';
 
 const scrypt = promisify(_scrypt);
 
@@ -30,6 +31,7 @@ export class AuthService {
     const payload = { username: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET }),
+      exp: addHours(new Date(), 1)
     };
   }
 
@@ -51,6 +53,9 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const [user] = await this.usersService.findDetailedBy(email);
     if (!user) throw new NotFoundException('User not found.');
+
+    if (!user.is_active) throw new BadRequestException('User is inactive, please contact support.')
+    if (!user.is_verified) throw new BadRequestException('Verification required.')
 
     const [salt, storedHash] = user.password.split('.');
     const hash = (await scrypt(password, salt, 32)) as Buffer;

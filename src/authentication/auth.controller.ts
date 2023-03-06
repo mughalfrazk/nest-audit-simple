@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RoleService } from '../modules/role/role.service';
 import { UserService } from '../modules/user/user.service';
+import { GetAuthorizedUser } from './decorators/authorize-user.decorator';
 
 
 @Controller('auth')
@@ -42,8 +43,9 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Serialize(UserDto)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  getProfile(@GetAuthorizedUser() user) {
+    return user;
   }
 }

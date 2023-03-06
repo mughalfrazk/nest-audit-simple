@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
@@ -23,6 +24,7 @@ import { AuthService } from '../../authentication/auth.service';
 import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { strings } from '../../services/constants/strings';
+import { ForbiddenException } from '@nestjs/common/exceptions';
 
 @ApiTags('Company')
 @Controller('company')
@@ -38,13 +40,15 @@ export class CompanyController {
   ) {}
 
   @Get('/')
-  async getAllFirms(@GetAuthorizedUser(strings.roles.SUPER_ADMIN) user) {
-    return await this.companyService.find();
+  async getAllCompanies(@GetAuthorizedUser(strings.roles.SUPER_ADMIN) user) {
+    return await this.companyService.findBy({ company_type: { name: 'Firm' } });
   }
 
   @Get('/:id')
   async getById(@GetAuthorizedUser(strings.roles.ADMIN) user, @Param('id') id: number) {
-    return await this.companyService.findOne(id);
+    if (user.role.identifier === strings.roles.SUPER_ADMIN) return this.companyService.findOne(id)
+    else if (user.role.identifier === strings.roles.ADMIN && user.company.id === Number(id)) return this.companyService.findOne(id)    
+    throw new ForbiddenException('Forbidden resource.')
   }
 
   @Post('/')

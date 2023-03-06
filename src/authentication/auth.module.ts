@@ -17,7 +17,7 @@ import { CurrentUserInterceptor } from './interceptors/current-user.interceptor'
     RoleModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: `${process.env.TOKEN_EXPIRY_IN_SECONDS}s` }
+      signOptions: { expiresIn: '1h' }
     }),
   ],
   controllers: [AuthController],
@@ -31,5 +31,5 @@ import { CurrentUserInterceptor } from './interceptors/current-user.interceptor'
     },
   ],
   exports: [AuthService]
-})
+}) 
 export class AuthModule { }

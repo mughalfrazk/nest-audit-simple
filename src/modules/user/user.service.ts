@@ -41,6 +41,11 @@ export class UserService {
     return this.repo.findBy({ email, deleted_at: IsNull() });
   }
 
+  findByOptions(options: any) {
+    if (!options) return null;
+    return this.repo.find({ where: { ...options, deleted_at: IsNull() }, relations: ['role']});
+  }
+
   async update(id: number, attrs: Partial<User>) {
     const { first_name, last_name } = attrs;
     return this.repo.update(id, { first_name, last_name });

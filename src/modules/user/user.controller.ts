@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,80 +6,55 @@ import {
   NotFoundException,
   Param,
   Patch,
-  Post,
-  Session,
-  UnauthorizedException,
   UseGuards,
+  Query
 } from '@nestjs/common';
-import { Serialize } from '../../interceptors/serialize.interceptor';
-import { AuthService } from '../../authentication/auth.service';
-import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { RoleService } from '../role/role.service';
+import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
+import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
+import { strings } from '../../services/constants/strings';
+import { IsNull } from 'typeorm';
+import { ForbiddenException } from '@nestjs/common/exceptions';
 
-@ApiTags('Authentication')
-@Controller('user')
+@ApiTags('Employee')
+@UseGuards(JwtAuthGuard)
+@Controller('employee')
 export class UserController {
-  // constructor(
-  //   private userService: UserService,
-  //   // private authService: AuthService,
-  //   private roleService: RoleService,
-  // ) {}
+  constructor(private userService: UserService) {}
 
-  // @Get('/auth/whoami')
-  // @Serialize(UserDto)
-  // whoAmI(@CurrentUser() user: User) {
-  //   return user;
-  // }
+  @Get('/')
+  async getAllEmployeeByFirm(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
+    if (strings.roles.SUPER_ADMIN === user.role.identifier) {
+      if (!!firm) return this.userService.findByOptions({ company: { id: firm } })
+      else return this.userService.findByOptions({ company: !!user?.company?.id ? { id: user?.company?.id } : IsNull() })
+    }
+    else return this.userService.findByOptions({ company: { id: user?.company?.id }})
+  }
 
-  // @Post('/auth/signup')
-  // @Serialize(UserDto)
-  // async createUser(@Body() body: CreateUserDto, @Session() session: any) {
-  //   let role;
+  @Get('/:id')
+  async getEmployeesById(@GetAuthorizedUser() user, @Param('id') id: number) {
+    if (user.role.identifier === strings.roles.EMPLOYEE && user.id === id) return this.userService.findOne(user.id)
+    else if (user.role.identifier === strings.roles.ADMIN) {
+      const employee = await this.userService.findOne(Number(id))
+      if (employee?.company?.id === user.company.id) return employee;
+      throw new ForbiddenException('Forbidden resource.')
+    }
+    else if (user.role.identifier === strings.roles.SUPER_ADMIN) return this.userService.findOne(Number(id))
+    throw new ForbiddenException('Forbidden resource.')
+  }
 
-  //   if (!!body.role_id) role = await this.roleService.findOne(body.role_id);
-  //   if (!role || role.identifier === 'super_admin') throw new BadRequestException('Please define a valid role.')
+  @Patch('/')
+  async update(@GetAuthorizedUser() user: User, @Body() body: any) {
+    return this.userService.update(user.id, body);
+  }
 
-  //   body['role'] = role?.id;
-  //   body['company'] = body.company_id;
-  //   body['designation'] = body.designation_id;
+  @Delete('/:id')
+  async delete(@Param('id') id: number) {
+    const user = await this.userService.findOne(id);
+    if (!user) throw new NotFoundException('User not found.');
 
-  //   // const user = await this.authService.signup(body);
-  //   return user;
-  // }
-
-  // @Post('/auth/signin')
-  // @Serialize(UserDto)
-  // async signin(@Body() body: any, @Session() session: any) {
-  //   // const user = await this.authService.signin(body.email, body.password);
-
-  //   if (!user.is_active) throw new UnauthorizedException('User is Inactive.');
-  //   if (!user.is_verified) throw new UnauthorizedException('User verification required.');
-
-  //   session.userId = user.id;
-  //   session.role = user.role.identifier;
-  //   return user;
-  // }
-
-  // @Get('/auth/signout')
-  // signOut(@Session() session: any) {
-  //   session.userId = null;
-  //   session.role = null;
-  // }
-
-  // @Patch('/')
-  // async update(@CurrentUser() user: User, @Body() body: any) {
-  //   return this.userService.update(user.id, body);
-  // }
-
-  // @Delete('/:id')
-  // async delete(@Param('id') id: number) {
-  //   const user = await this.userService.findOne(id);
-  //   if (!user) throw new NotFoundException('User not found.');
-
-  //   return this.userService.remove(id);
-  // }
+    return this.userService.remove(id);
+  }
 }

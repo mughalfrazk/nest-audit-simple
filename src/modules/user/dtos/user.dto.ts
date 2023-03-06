@@ -7,6 +7,9 @@ export class UserDto {
   id: number;
 
   @Expose()
+  employee_no
+
+  @Expose()
   first_name: string;
 
   @Expose()

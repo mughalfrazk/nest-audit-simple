@@ -8,7 +8,7 @@ import {
   Param,
   Patch,
   Post,
-  UnauthorizedException,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
@@ -25,7 +25,6 @@ import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { strings } from '../../services/constants/strings';
 import { ForbiddenException } from '@nestjs/common/exceptions';
-
 @ApiTags('Company')
 @Controller('company')
 @UseGuards(JwtAuthGuard)
@@ -41,22 +40,41 @@ export class CompanyController {
 
   @Get('/')
   async getAllCompanies(@GetAuthorizedUser(strings.roles.SUPER_ADMIN) user) {
-    return await this.companyService.findBy({ company_type: { name: 'Firm' } });
+    return this.companyService.findBy({ company_type: { name: 'Firm' } });
   }
 
-  @Get('/:id')
-  async getById(@GetAuthorizedUser(strings.roles.ADMIN) user, @Param('id') id: number) {
-    if (user.role.identifier === strings.roles.SUPER_ADMIN) return this.companyService.findOne(id)
-    else if (user.role.identifier === strings.roles.ADMIN && user.company.id === Number(id)) return this.companyService.findOne(id)    
+  @Get('/clients')
+  async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user) {
+    return this.firmClientService.findBy({ firm: { id: user.company.id } }, ['client']);
+  }
+
+  @Get('/detail')
+  async getCompanyById(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
+    if (user.role.identifier === strings.roles.SUPER_ADMIN) {
+      if (!!firm) return this.companyService.findOne(firm)
+      else throw new BadRequestException("'firm' is required.")
+    }
+    else if (user.role.identifier === strings.roles.ADMIN) return this.companyService.findOne(user.company.id)    
     throw new ForbiddenException('Forbidden resource.')
   }
 
+  @Get('/client/:id')
+  async getClientById(@GetAuthorizedUser() user, @Param('id') id: number) {
+    if (user.role.identifier === strings.roles.ADMIN) {
+      const client = await this.firmClientService.findBy({ firm: { id: user.company.id }, client: { id } }, ['client'])
+      return client[0];
+    }
+  }
+
   @Post('/')
-  async create(@Body() body: CreateCompanyDto) {
+  async create(@GetAuthorizedUser(strings.roles.ADMIN) user, @Body() body: CreateCompanyDto) {
     const { company_type_id, name, abbreviation, firm_id, first_name, last_name, email, password } = body;
 
     const company_type = await this.companyTypeService.findOne(company_type_id);
     const isFirm = company_type.name === 'Firm';
+
+    if (strings.roles.ADMIN === user.role.identifier && isFirm) throw new ForbiddenException('Forbidden resource.')
+    if (strings.roles.ADMIN === user.role.identifier && Number(firm_id) !== user.company.id) throw new ForbiddenException('Forbidden resource.')
 
     const checkComapny = await this.companyService.findBy({ name });
     if (!!checkComapny.length) throw new BadRequestException('Company already exists')

@@ -1,5 +1,6 @@
-import { Controller, UseGuards, Body, Get, Post, Patch, Delete, Param, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Body, Get, Post, Param, BadRequestException, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { User } from '../user/user.entity';
 import { CreateFolderDto } from './dtos/create-folder.dto';
@@ -7,6 +8,7 @@ import { FolderService } from "./folder.service";
 
 @ApiTags('Folder')
 @Controller('folder')
+@UseGuards(JwtAuthGuard)
 export class FolderController {
   constructor(private folderService: FolderService) {}
 

@@ -20,8 +20,8 @@ export class Action {
   @Column()
   name: string;
 
-  @Column()
-  abbreviation: string;
+  @Column({ nullable: false })
+  identifier: string;
 
   @Column()
   description: string;

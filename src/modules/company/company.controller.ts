@@ -44,8 +44,13 @@ export class CompanyController {
   }
 
   @Get('/clients')
-  async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user) {
-    return this.firmClientService.findBy({ firm: { id: user.company.id } }, ['client']);
+  async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
+    if (user.role.identifier === strings.roles.SUPER_ADMIN) {
+      if (!!firm) return this.firmClientService.findBy({ firm: { id: firm } }, ['client'])
+      else throw new BadRequestException("'firm' is required.")
+    }
+    else if (user.role.identifier === strings.roles.ADMIN) return this.firmClientService.findBy({ firm: { id: user.company.id } }, ['client']);
+    throw new ForbiddenException('Forbidden resource.')
   }
 
   @Get('/detail')

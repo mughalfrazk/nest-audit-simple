@@ -33,6 +33,7 @@ import { DocumentModule } from './modules/document/document.module';
 import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './services/aws/s3.module';
 import { AuthModule } from './authentication/auth.module';
+import { ActionModule } from './modules/action/action.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { AuthModule } from './authentication/auth.module';
     AuthModule,
     UserModule,
     RoleModule,
+    ActionModule,
     CompanyModule,
     CompanyTypeModule,
     ContactInformationTypeModule,

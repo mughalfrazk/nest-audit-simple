@@ -34,6 +34,7 @@ import { ConfigModule } from '@nestjs/config';
 import { S3Module } from './services/aws/s3.module';
 import { AuthModule } from './authentication/auth.module';
 import { ActionModule } from './modules/action/action.module';
+import { ClientAssignmentModule } from './modules/client-assignment/client-assignment.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { ActionModule } from './modules/action/action.module';
     ActionModule,
     CompanyModule,
     CompanyTypeModule,
+    ClientAssignmentModule,
     ContactInformationTypeModule,
     DesignationModule,
     FolderModule,

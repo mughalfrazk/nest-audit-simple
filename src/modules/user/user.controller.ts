@@ -17,6 +17,8 @@ import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { strings } from '../../services/constants/strings';
 import { IsNull } from 'typeorm';
 import { ForbiddenException } from '@nestjs/common/exceptions';
+import { Serialize } from '../../interceptors/serialize.interceptor';
+import { UserDto } from './dtos/user.dto';
 
 @ApiTags('Employee')
 @UseGuards(JwtAuthGuard)
@@ -25,6 +27,7 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get('/')
+  @Serialize(UserDto)
   async getAllEmployeeByFirm(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
     if (strings.roles.SUPER_ADMIN === user.role.identifier) {
       if (!!firm) return this.userService.findByOptions({ company: { id: firm } })
@@ -34,7 +37,7 @@ export class UserController {
   }
 
   @Get('/:id')
-  async getEmployeesById(@GetAuthorizedUser() user, @Param('id') id: number) {
+  async getEmployeeById(@GetAuthorizedUser() user, @Param('id') id: number) {
     if (user.role.identifier === strings.roles.EMPLOYEE && user.id === id) return this.userService.findOne(user.id)
     else if (user.role.identifier === strings.roles.ADMIN) {
       const employee = await this.userService.findOne(Number(id))

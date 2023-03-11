@@ -25,6 +25,7 @@ import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { strings } from '../../services/constants/strings';
 import { ForbiddenException } from '@nestjs/common/exceptions';
+import { FirmClient } from '../firm-client/firm-client.entity';
 @ApiTags('Company')
 @Controller('company')
 @UseGuards(JwtAuthGuard)
@@ -45,12 +46,15 @@ export class CompanyController {
 
   @Get('/clients')
   async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
-    if (user.role.identifier === strings.roles.SUPER_ADMIN) {
-      if (!!firm) return this.firmClientService.findBy({ firm: { id: firm } }, ['client'])
-      else throw new BadRequestException("'firm' is required.")
-    }
-    else if (user.role.identifier === strings.roles.ADMIN) return this.firmClientService.findBy({ firm: { id: user.company.id } }, ['client']);
-    throw new ForbiddenException('Forbidden resource.')
+    const isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
+    let firmId: number;
+
+    if (isSuperAdmin && !!firm) firmId = firm;
+    else if (isSuperAdmin) throw new BadRequestException("'firm' is required.");
+    else if (!isSuperAdmin) firmId = user.company.id;
+    else throw new ForbiddenException('Forbidden resource.')
+
+    return this.firmClientService.findBy({ firm: { id: firmId } }, ['client']);
   }
 
   @Get('/detail')
@@ -65,10 +69,19 @@ export class CompanyController {
 
   @Get('/client/:id')
   async getClientById(@GetAuthorizedUser() user, @Param('id') id: number) {
-    if (user.role.identifier === strings.roles.ADMIN) {
-      const client = await this.firmClientService.findBy({ firm: { id: user.company.id }, client: { id } }, ['client'])
-      return client[0];
+    let firmId;
+    const isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
+    const isAdmin: boolean = user.role.identifier === strings.roles.ADMIN;
+
+    if (isAdmin) {
+      firmId = user.company.id;
     }
+
+    let client: any[];
+    if (isSuperAdmin) client = await this.firmClientService.findBy({ client: { id } }, ['client'])
+    else client = await this.firmClientService.findBy({ firm: { id: firmId }, client: { id } }, ['client'])
+  
+    return client[0];
   }
 
   @Post('/')

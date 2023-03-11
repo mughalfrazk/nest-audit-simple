@@ -38,7 +38,7 @@ export class UserController {
 
   @Get('/:id')
   async getEmployeeById(@GetAuthorizedUser() user, @Param('id') id: number) {
-    if (user.role.identifier === strings.roles.EMPLOYEE && user.id === id) return this.userService.findOne(user.id)
+    if (user.role.identifier === strings.roles.EMPLOYEE && user.id === Number(id)) return this.userService.findOne(user.id)
     else if (user.role.identifier === strings.roles.ADMIN) {
       const employee = await this.userService.findOne(Number(id))
       if (employee?.company?.id === user.company.id) return employee;

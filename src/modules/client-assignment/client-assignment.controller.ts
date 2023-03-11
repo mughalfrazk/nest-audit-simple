@@ -21,26 +21,41 @@ export class ClientAssignmentController {
 
   @Get('/')
   @Serialize(ClientAssignmentDto)
-  async getPermissionListByFirm(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number, @Query('employee') employee: number) {
-    let firmId;
-    let isSuperAdmin = user.role.identifier !== strings.roles.ADMIN
+  async getPermissionListByFirm(@GetAuthorizedUser() user, @Query('firm') firm: number, @Query('employee') employee: number) {
+    let firmId: number;
+    let employeeId: number;
+    let firmClientIds: number[];
+    let isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
+    let isAdmin: boolean = user.role.identifier === strings.roles.ADMIN;
 
-    if (!isSuperAdmin) firmId = user.company.id
-    else if (!!firm) firmId = firm
-    else throw new BadRequestException("'firm' is required.'")
-
-    const firmClients = await this.firmClientService.findBy({ firm: { id: firmId } }, ['client']);
-    const firmClientIds = firmClients.map(item => item.client.id);
-
-    // employee id exists, if the role is admin check employee belongs to admin's firm and return data by employee id. 
-    if (!!employee) {
-      if (isSuperAdmin) return this.clientAssignmentService.findBy({ company: { id: In(firmClientIds) }, user: { id: employee } }, ['company', 'user', 'action'])
-      const firmEmployee = await this.userService.findOne(employee)
-      if (firmEmployee.company.id === user.company.id) return this.clientAssignmentService.findBy({ company: { id: In(firmClientIds) }, user: { id: employee } }, ['company', 'user', 'action'])
+    // Authorize user and gather request
+    if (isSuperAdmin) { // if user is super_admin
+      employeeId = employee
+      if (!!firm) firmId = firm;
+      else throw new BadRequestException("'firm' is required.'")
+    
+      const firmClients = await this.firmClientService.findBy({ firm: { id: firmId } }, ['client']);
+      firmClientIds = firmClients.map(item => item.client.id);
+    } 
+    else if (isAdmin) { // if user is admin
+      firmId = user.company.id
+      if (!!employee) {
+        const firmEmployee = await this.userService.findOne(employee)
+        if (firmEmployee.company.id === user.company.id) employeeId = employee
+        else throw new ForbiddenException('Forbidden resource.')
+      }
+    
+      const firmClients = await this.firmClientService.findBy({ firm: { id: firmId } }, ['client']);
+      firmClientIds = firmClients.map(item => item.client.id);
+    } else if (!isSuperAdmin && !isAdmin) { // if user is employee
+      if (Number(employee) === user.id) employeeId = Number(employee);
       else throw new ForbiddenException('Forbidden resource.')
     }
 
-    return this.clientAssignmentService.findBy({ company: { id: In(firmClientIds) } }, ['company', 'user', 'action'])
+    
+    if (!isSuperAdmin && !isAdmin) return this.clientAssignmentService.findBy({ user: { id: employee } }, ['company', 'user', 'action']);
+    else if (!!employeeId) return this.clientAssignmentService.findBy({ company: { id: In(firmClientIds) }, user: { id: employee } }, ['company', 'user', 'action']);
+    else return this.clientAssignmentService.findBy({ company: { id: In(firmClientIds) } }, ['company', 'user', 'action']);
   }
 
   @Post('/')

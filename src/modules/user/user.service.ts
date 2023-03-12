@@ -25,10 +25,7 @@ export class UserService {
 
   async findOne(id: number): Promise<User> | null {
     if (!id) return null;
-    const user = await this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] });
-
-    if (user?.deleted_at) return null;
-    return user;
+    return this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] });
   }
 
   findDetailedBy(email: string) {

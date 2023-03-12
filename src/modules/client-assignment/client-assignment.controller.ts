@@ -60,17 +60,19 @@ export class ClientAssignmentController {
 
   @Post('/')
   async create(@GetAuthorizedUser(strings.roles.ADMIN) user, @Body() body: CreateClientAssignmentDto) {
+    let isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
+    let isAdmin: boolean = user.role.identifier === strings.roles.ADMIN;
     const { client_id, user_id, action_id } = body;
 
     const [company] = await this.firmClientService.findBy({ client: { id: client_id } }, ['firm'])
     const employee = await this.userService.findOne(user_id);
-    
-    if (user.role.identifier !== strings.roles.SUPER_ADMIN) {
+
+    if (isAdmin) {
       if (company.firm.id !== user.company.id) throw new ForbiddenException('Forbidden resource.');
       if (employee.company.id !== user.company.id) throw new ForbiddenException('Forbidden resource.');
     }
-    if (employee.role.identifier !== strings.roles.EMPLOYEE) throw new ForbiddenException('Forbidden resource.');
-    if (company.firm.id !== employee.company.id) throw new ForbiddenException('Forbidden resource.');
+    else if (!isSuperAdmin && !isAdmin) throw new ForbiddenException('Forbidden resource.');
+    if (company.firm.id !== employee.company.id) throw new BadRequestException('Invalid request.');
 
     const assignment = await this.clientAssignmentService.findBy({ user: { id: user_id }, company: { id: client_id }, action: { id: action_id } }, [])
     if (!!assignment.length) throw new BadRequestException('Permission already exists.')

@@ -31,4 +31,7 @@ export class Document {
 
   @Column()
   audit_date: Date
+
+  @Column()
+  created_at: Date
 }

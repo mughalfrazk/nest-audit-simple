@@ -1,4 +1,5 @@
-import { IsDate, IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsDateString, IsOptional, IsString } from "class-validator";
+import { IsFile } from "../../../validators/file-validator.decorator";
 
 export class CreateDocumentDto {
   @IsString()
@@ -13,7 +14,4 @@ export class CreateDocumentDto {
 
   @IsString()
   client: string;
-
-  @IsString()
-  uploaded_by: string;
 }

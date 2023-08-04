@@ -1,6 +1,8 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { CompanyDto } from '../../company/dtos/company.dto';
 import { RoleDto } from '../../role/dtos/role.dto';
+import { ClientAssignmentDto } from '../../client-assignment/dtos/client-assignment.dto';
+import { IsArray } from 'class-validator';
 
 export class UserDto {
   @Expose()
@@ -24,6 +26,9 @@ export class UserDto {
 
   @Expose()
   role: RoleDto
+
+  @Expose()
+  client_assignments: ClientAssignmentDto;
 
   @Expose()
   created_at: Date;

@@ -12,11 +12,9 @@ export class FolderService {
     return await this.repo.findOne({ where: { id }, relations });
   }
 
-  async find(options: any = null, relations: string[] = []) {
-    const { level_no = 0, name, client } = options;
-
-    if (!options) return null;
-    return this.repo.find({ where: { level_no, name, client: { id: client } }, relations });
+  async find(where: any = null, relations: string[] = []) {
+    if (!where) return null;
+    return this.repo.find({ where, relations });
   }
 
   async create(folder) {

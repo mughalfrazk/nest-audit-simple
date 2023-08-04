@@ -28,7 +28,6 @@ export class AuthController {
   @Serialize(UserDto)
   @UseGuards(JwtAuthGuard)
   async createUser(@GetAuthorizedUser(strings.roles.ADMIN) user, @Body() body: SignUpDto) {
-    // let role;
 
     if (strings.roles.ADMIN === user.role.identifier) {
       if (Number(body.role_id) === 1) throw new ForbiddenException('Forbidden resource.')
@@ -39,8 +38,6 @@ export class AuthController {
 
     const checkUser = await this.usersService.findBy(body.email);
     if (!!checkUser.length) throw new BadRequestException('Email already in use.');
-    // if (!!body.role_id) role = await this.roleService.findOne(body.role_id);
-    // if (!role || role.identifier === 'super_admin') throw new BadRequestException('Please define a valid role.')
 
     body['role'] = body?.role_id;
     body['company'] = strings.roles.ADMIN === user.role.identifier ? user.company.id : body.company_id;

@@ -23,14 +23,14 @@ export class UserService {
     return this.repo.save(entity);
   }
 
-  async findOne(id: number): Promise<User> | null {
+  async findOne(id: number, relations: string[] = []): Promise<User> | null {
     if (!id) return null;
-    return this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] });
+    return this.repo.findOne({ where: { id, deleted_at: IsNull() }, relations: ['company', 'role', ...relations ] });
   }
 
   findDetailedBy(email: string) {
     if (!email) return null;
-    return this.repo.find({ where: { email, deleted_at: IsNull() }, relations: ['company', 'role', 'designation'] })
+    return this.repo.find({ where: { email, deleted_at: IsNull() }, relations: ['company', 'role', 'client_assignments'] })
   }
 
   findBy(email: string) {

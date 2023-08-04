@@ -26,6 +26,9 @@ import { GetAuthorizedUser } from '../../authentication/decorators/authorize-use
 import { strings } from '../../services/constants/strings';
 import { ForbiddenException } from '@nestjs/common/exceptions';
 import { FirmClient } from '../firm-client/firm-client.entity';
+import { Serialize } from '../../interceptors/serialize.interceptor';
+import { ClientDto } from './dtos/client.dto';
+
 @ApiTags('Company')
 @Controller('company')
 @UseGuards(JwtAuthGuard)
@@ -45,6 +48,7 @@ export class CompanyController {
   }
 
   @Get('/clients')
+  @Serialize(ClientDto)
   async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
     const isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
     let firmId: number;
@@ -68,6 +72,7 @@ export class CompanyController {
   }
 
   @Get('/client/:id')
+  @Serialize(ClientDto)
   async getClientById(@GetAuthorizedUser() user, @Param('id') id: number) {
     let firmId;
     const isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;

@@ -9,6 +9,10 @@ export class FirmClientService {
     @InjectRepository(FirmClient) private repo: Repository<FirmClient>,
   ) {}
 
+  async findAll() {
+    return this.repo.find();
+  }
+
   async findBy(options: any, relations: any[]) {
     return this.repo.find({ where: {...options}, relations })
   }

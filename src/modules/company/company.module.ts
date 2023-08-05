@@ -7,6 +7,7 @@ import { CompanyTypeModule } from '../company-type/company-type.module';
 import { FirmClientModule } from '../firm-client/firm-client.module';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../../authentication/auth.module';
+import { ClientAssignmentModule } from '../client-assignment/client-assignment.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { AuthModule } from '../../authentication/auth.module';
     CompanyTypeModule,
     FirmClientModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    ClientAssignmentModule
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

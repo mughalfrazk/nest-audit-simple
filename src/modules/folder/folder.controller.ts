@@ -36,9 +36,7 @@ export class FolderController {
       relations = ['children', 'documents']
     }
 
-    const data = await this.folderService.find({ level_no: 0, client: { id: client }}, relations)
-    console.log(data)
-    return data
+    return this.folderService.find({ level_no: 0, client: { id: client }}, relations)
   }
 
   @Post('/')
@@ -69,7 +67,7 @@ export class FolderController {
     }
     body['level_no'] = level_no;
 
-    const checkFolder = await this.folderService.find({ level_no, name, client: client_id });
+    const checkFolder = await this.folderService.find({ level_no, name, client: { id: client_id } });
     if (!!checkFolder.length) throw new BadRequestException('Folder already exists')
 
     return this.folderService.create(body)

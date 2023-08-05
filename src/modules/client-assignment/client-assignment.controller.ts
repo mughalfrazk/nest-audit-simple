@@ -74,9 +74,17 @@ export class ClientAssignmentController {
     else if (!isSuperAdmin && !isAdmin) throw new ForbiddenException('Forbidden resource.');
     if (company.firm.id !== employee.company.id) throw new BadRequestException('Invalid request.');
 
-    const assignment = await this.clientAssignmentService.findBy({ user: { id: user_id }, company: { id: client_id }, action: { id: action_id } }, [])
-    if (!!assignment.length) throw new BadRequestException('Permission already exists.')
+    const checkIfFirstPermission = await this.clientAssignmentService.findBy({ user: { id: user_id }, company: { id: client_id }}, [])
+    if (!checkIfFirstPermission.length) {
+      const readPermissionBody = { ...body };
+      readPermissionBody.action_id = 2
 
-    return this.clientAssignmentService.create(body)
+      this.clientAssignmentService.create(readPermissionBody)
+    } else {
+      const assignment = await this.clientAssignmentService.findBy({ user: { id: user_id }, company: { id: client_id }, action: { id: action_id } }, [])
+      if (!!assignment.length) throw new BadRequestException('Permission already exists.')
+    }
+
+    return this.clientAssignmentService.create(body);
   }
 }

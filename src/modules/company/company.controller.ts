@@ -11,6 +11,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { In } from 'typeorm';
 import { CompanyService } from './company.service';
 import { CompanyTypeService } from '../company-type/company-type.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -25,9 +26,9 @@ import { JwtAuthGuard } from '../../authentication/guards/jwt-auth.guard';
 import { GetAuthorizedUser } from '../../authentication/decorators/authorize-user.decorator';
 import { strings } from '../../services/constants/strings';
 import { ForbiddenException } from '@nestjs/common/exceptions';
-import { FirmClient } from '../firm-client/firm-client.entity';
 import { Serialize } from '../../interceptors/serialize.interceptor';
 import { ClientDto } from './dtos/client.dto';
+import { ClientAssignmentService } from '../client-assignment/client-assignment.service';
 
 @ApiTags('Company')
 @Controller('company')
@@ -39,6 +40,7 @@ export class CompanyController {
     private firmClientService: FirmClientService,
     private userService: UserService,
     private authService: AuthService,
+    private clientAssignmentService: ClientAssignmentService,
     private s3Service: S3Service
   ) {}
 
@@ -49,16 +51,30 @@ export class CompanyController {
 
   @Get('/clients')
   @Serialize(ClientDto)
-  async getAllFirmClients(@GetAuthorizedUser(strings.roles.ADMIN) user, @Query('firm') firm: number) {
+  async getAllFirmClients(@GetAuthorizedUser(strings.roles.EMPLOYEE) user, @Query('firm') firm: number) {
     const isSuperAdmin: boolean = user.role.identifier === strings.roles.SUPER_ADMIN;
     let firmId: number;
+
+    let disticnt_client_ids = [];
+    if (strings.roles.EMPLOYEE === user.role.identifier) {
+      const assignments = await this.clientAssignmentService.findBy({ user: { id: user.id }}, ['company'])
+      const client_ids = assignments.map(item => item.company.id);
+      disticnt_client_ids = client_ids.filter((item, index) => client_ids.indexOf(item) === index)
+    }
 
     if (isSuperAdmin && !!firm) firmId = firm;
     else if (isSuperAdmin) throw new BadRequestException("'firm' is required.");
     else if (!isSuperAdmin) firmId = user.company.id;
     else throw new ForbiddenException('Forbidden resource.')
 
-    return this.firmClientService.findBy({ firm: { id: firmId } }, ['client']);
+    let where;
+    if (strings.roles.EMPLOYEE === user.role.identifier) {
+      where = { firm: { id: firmId }, client: { id: In(disticnt_client_ids) } }
+    } else {
+      where = { firm: { id: firmId } }
+    }
+
+    return this.firmClientService.findBy(where, ['client']);
   }
 
   @Get('/detail')

@@ -8,9 +8,9 @@ import { actionSeeder } from "./action.seeder";
 export class ActionService {
   constructor(@InjectRepository(Action) private repo: Repository<Action>) {}
 
-  async findBy(name?: string) {
-    if (!name) return this.repo.find();
-    return this.repo.findBy({ name });
+  async findBy(options: any = null) {
+    if (!options) return this.repo.find();
+    return this.repo.findBy(options);
   }
 
   async seed() {
@@ -19,7 +19,7 @@ export class ActionService {
 
       for (let i = 0; i < actionSeeder.length; i++) {
         const element = actionSeeder[i];
-        const entity = await this.findBy(element.name);
+        const entity = await this.findBy({ name: element.name });
         if (!entity.length) dataArray.push(element)
       }
 

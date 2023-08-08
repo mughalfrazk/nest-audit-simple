@@ -4,6 +4,7 @@ import { RoleService } from './modules/role/role.service';
 import { CompanyTypeService } from './modules/company-type/company-type.service';
 import { ContactInformationTypeService } from './modules/contact-information-type/contact-information-type.service';
 import { ActionService } from './modules/action/action.service';
+import { ModuleService } from './modules/module/module.service';
 
 @Injectable()
 export class AppService implements OnApplicationBootstrap {
@@ -13,7 +14,8 @@ export class AppService implements OnApplicationBootstrap {
     private companyTypeService: CompanyTypeService,
     private contactInformationTypeService: ContactInformationTypeService,
     private authService: AuthService,
-  ) {}
+    private moduleService: ModuleService
+    ) {}
 
   async onApplicationBootstrap() {
     await this.runSeeder()
@@ -26,6 +28,7 @@ export class AppService implements OnApplicationBootstrap {
       // await this.companyTypeService.seed();
       // await this.contactInformationTypeService.seed();
       // await this.authService.seed();
+      // await this.moduleService.seed();
     } catch (error) {
       
     }

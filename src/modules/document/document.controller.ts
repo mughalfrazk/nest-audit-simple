@@ -9,6 +9,9 @@ import { JwtAuthGuard } from "../../authentication/guards/jwt-auth.guard";
 import { GetAuthorizedUser } from "../../authentication/decorators/authorize-user.decorator";
 import { strings } from "../../services/constants/strings";
 import { UpdateDocumentDto } from "./dtos/update-document.dto";
+import { RecordService } from "../record/record.service";
+import { ActionService } from "../action/action.service";
+import { ModuleService } from "../module/module.service";
 
 @ApiTags('Document')
 @Controller('document')
@@ -17,6 +20,9 @@ export class DocumentController {
   constructor(
     private documentService: DocumentService,
     private firmClientService: FirmClientService,
+    private actionService: ActionService,
+    private recordService: RecordService,
+    private moduleService: ModuleService,
     private s3Service: S3Service
   ) { }
 
@@ -74,7 +80,7 @@ export class DocumentController {
       if (!!body.audit_date) {
         const checkForSameFirm = await this.firmClientService.findBy({ client: { id: body.client }, firm: { id: user.company.id } }, [])
         if (!checkForSameFirm.length) throw new UnauthorizedException("You are not authorised for action")
-  
+
         const assigned_role = client_permissions.filter(item => item.action.identifier === strings.actions.UPDATE)
         if (!assigned_role.length) throw new UnauthorizedException("You are not authorised for action")
 
@@ -88,7 +94,7 @@ export class DocumentController {
     } else if (user.role.identifier === strings.roles.ADMIN) {
       checkDocument = await this.documentService.find({ id }, ['client.clients.firm'])
       if (!checkDocument.length) throw new BadRequestException('Invalid Document');
-      if (checkDocument[0].client.clients[0].firm.id !== user.company.id) throw new UnauthorizedException("You are not authorised for action")
+      if (checkDocument[0].client.clients[0].firm.id !== user.company.id) throw new UnauthorizedException("You are not authorised for action");
 
       if (!!body.audit_date) {
         updateBody = { audit_date: body.audit_date }
@@ -104,6 +110,35 @@ export class DocumentController {
       }
     }
 
+    const actions = await this.actionService.findBy(null);
+    const [module] = await this.moduleService.findBy('document');
+
+
+    let recordBody = { action: null, created_by: user.id, recordable_type: module.id, recordable_id: +id, old_value: null, new_value: null }
+    if (!!body.audit_date) {
+      const [getOldValue] = await this.documentService.find({ id, client: { id: body.client } });
+      if (!getOldValue) throw new UnauthorizedException("You are not authorised for action");
+
+      recordBody.old_value = getOldValue[Object.getOwnPropertyNames(updateBody)[0]]
+      recordBody.new_value = updateBody.audit_date
+      const [action] = actions.filter(item => item.identifier === strings.actions.UPDATE)
+      recordBody.action = action.id
+    } else if (!!body.reviewed) {
+      const [action] = actions.filter(item => item.identifier === strings.actions.REVIEW)
+      recordBody.action = action.id
+    }
+
+    await this.recordService.create(recordBody);
     return this.documentService.update({ id, client: { id: body.client } }, updateBody)
+  }
+
+  @Get('/:id')
+  async downloadDocument(@GetAuthorizedUser() user, @Param('id') id: number) {
+    const [document] = await this.documentService.find({ id }, ['client.clients.firm']);
+    const firmBucket = document.client.clients[0].firm.bucket_name;
+    const documentKey = decodeURI(document.path.split(firmBucket)[1].substring(1));
+    const s3Object = await this.s3Service.getFileFromS3(firmBucket, documentKey);
+    s3Object['name'] = document.name;
+    return s3Object 
   }
 }

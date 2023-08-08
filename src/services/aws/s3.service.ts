@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { S3 } from "aws-sdk";
-import * as fs from "fs";
-import * as path from "path";
-
 @Injectable()
-
 export class S3Service {
   private s3;
   constructor() {
@@ -18,8 +14,9 @@ export class S3Service {
     return new Promise((resolve, reject) => {
       this.s3.listBuckets(function (err, data) {
         if (err) {
+          console.log("Error: ", err);
           reject(err)
-        } else {
+        } else if (data) {
           resolve(data)
         }
       })
@@ -30,7 +27,7 @@ export class S3Service {
     return new Promise((resolve, reject) => {
       this.s3.createBucket({ Bucket }, function(err, data) {
         if (err) {
-          console.log("Error", err);
+          console.log("Error: ", err);
           reject(err)
         } else {
           console.log("Success", data.Location);
@@ -44,9 +41,9 @@ export class S3Service {
     return new Promise((resolve, reject) => {
       this.s3.upload ({ Bucket, Key: `${name}/`, Body: 'Client Folder' }, function (err, data) {
         if (err) {
-          console.log("Error", err);
+          console.log("Error: ", err);
           reject(err)
-        } if (data) {
+        } else if (data) {
           console.log("Upload Success", data.Location);
           resolve(data)
         }
@@ -60,11 +57,38 @@ export class S3Service {
     return new Promise((resolve, reject) => {
       this.s3.upload (params, function (err, data) {
         if (err) {
+          console.log("Error: ", err);
           reject(err)
-        } if (data) {
+        } else if (data) {
           resolve(data.Location)
         }
       });
+    })
+  }
+
+  async listObjects(Bucket: string) {
+    return new Promise((resolve, reject) => {
+      this.s3.listObjects({ Bucket }, function (err, data) {
+        if (err) {
+          console.log("Error: ", err)
+          reject(err)
+        } else if (data) {
+          resolve(data);
+        }
+      })
+    })
+  }
+
+  async getFileFromS3(Bucket: string, Key: string) {
+    return new Promise((resolve, reject) => {
+      this.s3.getObject({ Bucket, Key }, function (err, data) {
+        if (err) {
+          console.log("Error: ", err)
+          reject(err)
+        } else if (data) {
+          resolve(data);
+        }
+      })
     })
   }
 }

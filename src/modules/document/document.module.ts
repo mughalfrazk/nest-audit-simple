@@ -6,9 +6,12 @@ import { FirmClientModule } from "../firm-client/firm-client.module";
 import { DocumentController } from "./document.controller";
 import { Document } from "./document.entity";
 import { DocumentService } from "./document.service";
+import { RecordModule } from "../record/record.module";
+import { ActionModule } from "../action/action.module";
+import { ModuleModule } from "../module/module.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Document]), CompanyModule, FirmClientModule],
+  imports: [TypeOrmModule.forFeature([Document]), CompanyModule, FirmClientModule, RecordModule, ActionModule, ModuleModule],
   controllers: [DocumentController],
   providers: [DocumentService],
   exports: [DocumentService]

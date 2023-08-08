@@ -35,6 +35,8 @@ import { S3Module } from './services/aws/s3.module';
 import { AuthModule } from './authentication/auth.module';
 import { ActionModule } from './modules/action/action.module';
 import { ClientAssignmentModule } from './modules/client-assignment/client-assignment.module';
+import { ModuleModule } from './modules/module/module.module';
+import { RecordModule } from './modules/record/record.module';
 
 @Module({
   imports: [
@@ -78,7 +80,9 @@ import { ClientAssignmentModule } from './modules/client-assignment/client-assig
     ContactInformationTypeModule,
     DesignationModule,
     FolderModule,
-    DocumentModule
+    DocumentModule,
+    ModuleModule,
+    RecordModule
   ],
   providers: [AppService],
 })

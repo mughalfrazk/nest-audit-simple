@@ -43,7 +43,7 @@ import { RecordModule } from './modules/record/record.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       // database: 'db.sqlite',
-      url: 'postgresql://postgres:faraz1412@localhost:5432/audit-simple',
+      url: process.env.DATABASE_CONN_STRING,
       entities: [
         Action,
         City,

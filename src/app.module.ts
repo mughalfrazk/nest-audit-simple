@@ -37,6 +37,7 @@ import { ActionModule } from './modules/action/action.module';
 import { ClientAssignmentModule } from './modules/client-assignment/client-assignment.module';
 import { ModuleModule } from './modules/module/module.module';
 import { RecordModule } from './modules/record/record.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { RecordModule } from './modules/record/record.module';
     ModuleModule,
     RecordModule
   ],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

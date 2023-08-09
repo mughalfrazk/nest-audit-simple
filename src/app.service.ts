@@ -23,12 +23,12 @@ export class AppService implements OnApplicationBootstrap {
 
   async runSeeder() {
     try {
-      // await this.roleService.seed();
-      // await this.actionService.seed();
-      // await this.companyTypeService.seed();
-      // await this.contactInformationTypeService.seed();
-      // await this.authService.seed();
-      // await this.moduleService.seed();
+      await this.roleService.seed();
+      await this.actionService.seed();
+      await this.companyTypeService.seed();
+      await this.contactInformationTypeService.seed();
+      await this.authService.seed();
+      await this.moduleService.seed();
     } catch (error) {
       
     }
